@@ -18,7 +18,7 @@ import webapp2
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello gevann! Welcome to the new setup for your app. Hope this works well for you.')
+        self.response.write('Hello gevann! Added the Jinja2 Template.')
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
