@@ -10,8 +10,6 @@ handlers:
   upload: favicon\.ico
 
 - url: .*
-
- []'\
   script: myblog.app
 #  script: main.app
 
