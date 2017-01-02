@@ -1,20 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link type="text/css" rel="stylesheet" href="/static/main.css" />
+    <link type="text/css" rel="stylesheet" href="/static/main.css"/>
 
-  <title>Gevann Mullins Udacity Blog</title>
+    <title>Gevann Mullins Udacity Blog</title>
+
+    <style>
+        /*body {*/
+        /*background: url("/images/bg1.jpg") no-repeat 100% 100%;*/
+        /*}*/
+    </style>
 </head>
 
-<body>
-  <a href="/blog" class="main-title">
-    CS 253 Blog
-  </a>
+<body id="bodyBG">
+<a href="/blog" class="main-title">
+    Gevann Mullins Blog Posts
+</a>
 
-  <div id="content">
-  {% block content %}
-  {% endblock %}
-  </div>
+<div id="content">
+    {% block content %}
+    {% endblock %}
+</div>
+<script language="JavaScript">
+
+    function bgSize() {
+        var e = window, a = 'inner';
+        if (!( 'innerWidth' in window )) {
+            a = 'client';
+            e = document.documentElement || document.body;
+        }
+        document.getElementById("bodyBG").style.backgroundSize = e[a + 'Width'] + "px " + e[a + 'Height'] + "px";
+        document.getElementById("bodyBG").style.backgroundPosition = "0px 0px";
+    }
+
+    bgSize();
+    window.onresize = function() {
+        var e = window, a = 'inner';
+        if (!( 'innerWidth' in window )) {
+            a = 'client';
+            e = document.documentElement || document.body;
+        }
+        document.getElementById("bodyBG").style.backgroundSize = e[a + 'Width'] + "px " + e[a + 'Height'] + "px";
+        document.getElementById("bodyBG").style.backgroundPosition = "0px 0px";
+    }
+</script>
 </body>
 
 </html>
