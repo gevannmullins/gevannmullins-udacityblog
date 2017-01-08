@@ -33,7 +33,7 @@ def render_post(response, post):
 
 class MainPage(BlogHandler):
     def get(self):
-        self.render('start.html')
+        self.render('front.html')
 
 
 ##### blog stuff
