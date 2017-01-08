@@ -1,0 +1,30 @@
+body {
+
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+section {
+    margin-top: 15px;
+    padding: 15px 15px 15px 15px;
+    border: 1px solid #3c3c3c;
+    text-align: center;
+}
+
+#nav_section {
+    padding: 2px 2px 2px 2px;
+}
+
+#main_navigation li {
+    display: inline-block;
+}
+
+#main_navigation li:not(:last-child):after {
+    position: relative;
+    content: "|";
+    margin-right: 10px;
+    margin-left: 14px;
+    font-size: 22px;
+    top: 3.5px;
+}

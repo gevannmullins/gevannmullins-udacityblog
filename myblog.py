@@ -1,7 +1,6 @@
 import os
 import re
 from string import letters
-
 import webapp2
 import jinja2
 
@@ -34,7 +33,7 @@ def render_post(response, post):
 
 class MainPage(BlogHandler):
     def get(self):
-        self.write('Hello, Gevann! You added the template files.')
+        self.render('start.html')
 
 
 ##### blog stuff

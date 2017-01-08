@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+    <link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet" href="/static/main.css"/>
 
     <title>Gevann Mullins Udacity Blog</title>
 
-    <style>
-        /*body {*/
-        /*background: url("/images/bg1.jpg") no-repeat 100% 100%;*/
-        /*}*/
-    </style>
+    <script src="jquery-3.1.1.min.js" language="javascript" type="text/javascript" rel="script"></script>
+
 </head>
 
 <body id="bodyBG">
@@ -35,13 +34,7 @@
 
     bgSize();
     window.onresize = function() {
-        var e = window, a = 'inner';
-        if (!( 'innerWidth' in window )) {
-            a = 'client';
-            e = document.documentElement || document.body;
-        }
-        document.getElementById("bodyBG").style.backgroundSize = e[a + 'Width'] + "px " + e[a + 'Height'] + "px";
-        document.getElementById("bodyBG").style.backgroundPosition = "0px 0px";
+        bgSize();
     }
 </script>
 </body>
