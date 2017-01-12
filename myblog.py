@@ -164,13 +164,16 @@ class Welcome(BlogHandler):
         if valid_username(username):
             self.render('welcome.html', username=username)
         else:
-            self.redirect('/unit2/signup')
+            self.redirect('/signup')
 
 
 app = webapp2.WSGIApplication([('/', MainPage),
-                               ('/unit2/rot13', Rot13),
-                               ('/unit2/signup', Signup),
-                               ('/unit2/welcome', Welcome),
+                               ('/rot13', Rot13),
+                               ('/signup', Signup),
+                               ('/welcome', Welcome),
+                               # ('/unit2/rot13', Rot13),
+                               # ('/unit2/signup', Signup),
+                               # ('/unit2/welcome', Welcome),
                                ('/blog/?', BlogFront),
                                ('/blog/([0-9]+)', PostPage),
                                ('/blog/newpost', NewPost),

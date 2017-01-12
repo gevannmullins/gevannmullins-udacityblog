@@ -1,70 +1,18 @@
-<!DOCTYPE html>
+{% if standalone %}{% extends 'base.html' %}{% endif %}
+{% block signup %}
 
-<html>
-  <head>
-    <title>Unit 2 Rot 13</title>
-    <style type="text/css">
-      .label {text-align: right}
-      .error {color: red}
-    </style>
-
-  </head>
-
-  <body>
     <h2>Signup</h2>
     <form method="post">
-      <table>
-        <tr>
-          <td class="label">
-            Username
-          </td>
-          <td>
-            <input type="text" name="username" value="{{username}}">
-          </td>
-          <td class="error">
-            {{error_username}}
-          </td>
-        </tr>
-
-        <tr>
-          <td class="label">
-            Password
-          </td>
-          <td>
-            <input type="password" name="password" value="">
-          </td>
-          <td class="error">
-            {{error_password}}
-          </td>
-        </tr>
-
-        <tr>
-          <td class="label">
-            Verify Password
-          </td>
-          <td>
-            <input type="password" name="verify" value="">
-          </td>
-          <td class="error">
-            {{error_verify}}
-          </td>
-        </tr>
-
-        <tr>
-          <td class="label">
-            Email (optional)
-          </td>
-          <td>
-            <input type="text" name="email" value="{{email}}">
-          </td>
-          <td class="error">
-            {{error_email}}
-          </td>
-        </tr>
-      </table>
-
-      <input type="submit">
+        <input type="text" name="username" class="form-control" value="{{ username }}" placeholder="Username">
+        <span>{{ error_username }}</span>
+        <input type="password" name="password" class="form-control" value="" placeholder="Password">
+        <span>{{ error_password }}</span>
+        <input type="password" name="verify" class="form-control" value="" placeholder="Re-type Password">
+        <span>{{ error_verify }}</span>
+        <input type="text" name="email" class="form-control" value="{{ email }}" placeholder="Email (Optional)">
+        <span>{{ error_email }}</span>
+        <input class="btn btn-primary" type="submit" />
     </form>
-  </body>
 
-</html>
+{% endblock %}
+
