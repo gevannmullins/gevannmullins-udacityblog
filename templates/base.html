@@ -45,7 +45,9 @@
     <div class="row">
         <div id="header_title" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center padding_15">
             <div class="div_cont">
+                {% block webtitle %}
                 <img src="images/webtitle.svg" width="100%" style="max-width: 600px;" />
+                {% endblock %}
             </div>
         </div>
     </div>
@@ -53,6 +55,13 @@
 
 <!--Body and sidebar section-->
 <section id="body_section" class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            {% if username %}
+                Welcome {{username}}!
+            {% endif %}
+        </div>
+    </div>
     <div class="row">
         {% block content %}
         {% endblock %}

@@ -1,18 +1,23 @@
-{% if standalone %}{% extends 'base.html' %}{% endif %}
-{% block signup %}
+{% extends 'base.html' %}
 
-    <h2>Signup</h2>
-    <form method="post">
-        <input type="text" name="username" class="form-control" value="{{ username }}" placeholder="Username">
-        <span>{{ error_username }}</span>
-        <input type="password" name="password" class="form-control" value="" placeholder="Password">
-        <span>{{ error_password }}</span>
-        <input type="password" name="verify" class="form-control" value="" placeholder="Re-type Password">
-        <span>{{ error_verify }}</span>
-        <input type="text" name="email" class="form-control" value="{{ email }}" placeholder="Email (Optional)">
-        <span>{{ error_email }}</span>
-        <input class="btn btn-primary" type="submit" />
-    </form>
+{% block content %}
+
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <p>Signup:</p>
+        <form method="post">
+            <input type="text" name="username" class="form-control" value="{{ username }}" placeholder="Username">
+            <span>{{ error_username }}</span>
+            <input type="password" name="password" class="form-control" value="" placeholder="Password">
+            <span>{{ error_password }}</span>
+            <input type="password" name="verify" class="form-control" value="" placeholder="Re-type Password">
+            <span>{{ error_verify }}</span>
+            <input type="text" name="email" class="form-control" value="{{ email }}" placeholder="Email (Optional)">
+            <span>{{ error_email }}</span>
+            <input class="btn btn-primary" type="submit" />
+        </form>
+    </div>
+    <div class="col-lg-3"></div>
 
 {% endblock %}
 

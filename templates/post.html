@@ -1,15 +1,49 @@
+{% block head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link type="text/css" rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="../static/custom.css"/>
+    <title>Gevann Mullins Udacity Blog</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Bilbo+Swash+Caps|Calligraffitti|Homemade+Apple|Nothing+You+Could+Do|Tangerine');
+        #web_title {
+            color: #ffffff;
+
+            /*font-family: 'Tangerine', cursive;*/
+            /*font-family: 'Homemade Apple', cursive;*/
+            /*font-family: 'Nothing You Could Do', cursive;*/
+            /*font-family: 'Calligraffitti', cursive;*/
+            font-family: 'Bilbo Swash Caps', cursive;
+            font-size: 122px;
+            text-shadow: #0f0f0f 8px 8px 8px 8px;
+        }
+
+        #web_title:after {
+            content: "Web Blogs for Developers";
+            color: #ffffff;
+            font-family: "Calligraffitti", cursive;
+            font-size: 14px;
+        }
+
+    </style>
+{% endblock %}
+
+
+
 <div class="post">
-  <div class="post-heading">
-    <div class="post-title">
-      {{p.subject}}
+    <div class="post-heading">
+        <div class="post-title">
+
+            <a href="/blog/{{ p.key().id() }}">{{ p.subject }}</a>
+        </div>
+
+        <div class="post-date">
+            {{ p.created.strftime("%b %d, %Y") }}
+        </div>
     </div>
 
-    <div class="post-date">
-      {{p.created.strftime("%b %d, %Y")}}
+    <div class="post-content">
+        {{ p._render_text | safe }}
     </div>
-  </div>
 
-  <div class="post-content">
-    {{p._render_text | safe}}
-  </div>
 </div>
+

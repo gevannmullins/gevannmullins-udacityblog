@@ -8,7 +8,7 @@
             <div class="trans_white_bg z0"></div>
             <!-- login form -->
             <div class="z5">
-                {% include "login-form.html" %}
+{#                {% include "login-form.html" %}#}
             </div>
         </div>
 
@@ -17,7 +17,7 @@
             <div class="trans_white_bg z0"></div>
             <!-- signup form -->
             <div id="signup" class="z5">
-                {% include "signup-form.html" %}
+{#                {% include "signup-form.html" %}#}
             </div>
         </div>
 
@@ -28,38 +28,36 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="navbar-brand" href="#">Udacity Blog</a>
+            <a class="navbar-brand" href="/">Udacity Blog</a>
         </div>
 
         <div id="slidemenu" style="margin-right: 15px;">
 
             <!-- login and register button container -->
             <div class="navbar-form navbar-right text-center">
-                <div class="form-group">
-                    <button id="login_btn" class="btn btn-primary ">Login</button>
-                </div>
-                <div class="form-group">
-                    <button id="signup_btn" class="btn btn-primary">Signup</button>
-                </div>
+                {% if username %}
+                    <p style="color: #ffffff; display: inline-flex; margin-right: 15px;">Hi {{username}}!</p>
+                    <a href="/logout" class="btn btn-primary">Logout</a>
+                {% else %}
+                    <div class="form-group">
+                        <a href="/login" class="btn btn-primary ">Login</a>
+{#                        <button id="login_btn" class="btn btn-primary ">Login</button>#}
+                    </div>
+                    <div class="form-group">
+                        <a href="/signup" class="btn btn-primary ">Signup</a>
+{#                        <button id="signup_btn" class="btn btn-primary">Signup</button>#}
+                    </div>
+                {% endif %}
+
             </div>
 
-            <!-- search form -->
-            <!--
-            <form class="navbar-form navbar-right" role="form">
-                <div class="form-group">
-                    <input type="search" placeholder="search blogs" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
-            -->
-
             <!-- navigation links -->
+            {% if username %}
             <ul id="navigation" class="nav navbar-nav text-center">
                 {% set navigation_links = [
                 ('/', 'index', 'Home'),
                 ('/blog', 'blog', 'Blogs'),
-                ('/welcome', 'welcome', 'Welcome'),
-                ('/about/', 'about', 'About')
+                ('/newpost', 'newpost', 'New Post'),
                 ] -%}
                 {% set active_page = active_page|default('index') -%}
 
@@ -71,6 +69,25 @@
                 {% endfor %}
             </ul>
 
+            {% endif %}
+<!--
+{#            <ul id="navigation" class="nav navbar-nav text-center">#}
+{#                {% set navigation_links = [#}
+{#                ('/', 'index', 'Home'),#}
+{#                ('/blog', 'blog', 'Blogs'),#}
+{#                ('/welcome', 'welcome', 'Welcome'),#}
+{#                ('/about/', 'about', 'About')#}
+{#                ] -%}#}
+{#                {% set active_page = active_page|default('index') -%}#}
+{##}
+{#                {% for href, id, caption in navigation_links %}#}
+{#                <li#}
+{#                {% if id == active_page %} class="active"{% endif %}>#}
+{#                <a href="{{ href|e }}">{{ caption|e }}</a>#}
+{#                </li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+-->
         </div>
 
     </div>
