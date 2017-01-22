@@ -57,19 +57,13 @@
 <section id="body_section" class="container">
     <div class="row">
 
-<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 padding_10">
-  <div class="bordered">
-    SideBar
-  </div>
-</div>
-<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 padding_10">
-  <div class="bordered">
-    {% for p in posts %}
-    {{ p.render() | safe }}
-    <br><br>
-    {% endfor %}
-  </div>
-</div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding_10">
+            {% for p in posts %}
+            {{ p.render() | safe }}
+            <br><br>
+            {% endfor %}
+        </div>
+
     </div>
 </section>
 

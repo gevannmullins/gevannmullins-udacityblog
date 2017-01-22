@@ -27,23 +27,28 @@
     </style>
 {% endblock %}
 
+<div class="container-fluid bordered padding_15">
+    <div class="row">
+        <div class="col-lg-12">
 
+            <div class="post-title">
+                <a href="/blog/{{ p.key().id() }}">{{ p.subject }}</a>
+            </div>
 
-<div class="post">
-    <div class="post-heading">
-        <div class="post-title">
+            <div>
+                {{ p.created.strftime("%b %d, %Y") }} | Created by: {{ p.created_by }}
+                <hr width="100%" style="border:2px solid #2b669a;" />
+            </div>
 
-            <a href="/blog/{{ p.key().id() }}">{{ p.subject }}</a>
-        </div>
-
-        <div class="post-date">
-            {{ p.created.strftime("%b %d, %Y") }}
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-12">
 
-    <div class="post-content">
-        {{ p._render_text | safe }}
+            <div class="post-content">
+                {{ p._render_text | safe }}
+            </div>
+
+        </div>
     </div>
-
 </div>
-

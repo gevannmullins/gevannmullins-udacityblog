@@ -7,6 +7,7 @@ import datetime
 import random
 import hashlib
 import hmac
+import string
 from string import letters
 
 from google.appengine.ext import db
@@ -14,11 +15,49 @@ from google.appengine.ext import db
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
+SECRET_KEY = 'udacityblog'
+
+#
+# cookie hash functions
+#
+def make_secure_val(val):
+    return '{0}|{1}'.format(val, hmac.new(SECRET_KEY, val).hexdigest())
+
+def check_secure_val(secure_val):
+    val = secure_val.split('|')[0]
+    if secure_val == make_secure_val(val):
+        return val
+
+#
+# user password hash functions
+#
+def make_salt():
+    return ''.join(random.choice(string.letters) for i in range(5))
+
+def make_pw_hash(name, pw, salt=None):
+    salt = salt or make_salt()
+    h = hashlib.sha256(name + pw + salt).hexdigest()
+
+    return '{0},{1}'.format(salt, h)
+
+def is_valid_pw(name, pw, h):
+    salt = h.split(',')[0]
+    return h == make_pw_hash(name, pw, salt)
+
+
+
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
 class BlogHandler(webapp2.RequestHandler):
+    # def write(self, template, **params):
+    #     t = jinja_env.get_template(template)
+    #
+    #     always send self.user to template
+    # params.update({'user': self.user})
+    #
+    # self.response.write(t.render(params))
 
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -40,8 +79,11 @@ class BlogHandler(webapp2.RequestHandler):
         cookie_val = self.request.cookies.get(name)
         return cookie_val and check_secure_val(cookie_val)
 
-    def login(self, user):
-        self.set_secure_cookie('user_id', str(user.key().id()))
+    def clear_secure_cookie(self, name):
+        cookie_val = self.response.headers.clear()
+
+    # def login(self, user):
+    #     self.set_secure_cookie('user_id', str(user.key().id()))
 
     def logout(self):
         self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
@@ -49,7 +91,7 @@ class BlogHandler(webapp2.RequestHandler):
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
-        self.user = uid and User.by_id(int(uid))
+        self.user = uid and User.get_by_id(int(uid))
 
     def render_post(response, post):
         response.out.write('<b>' + post.subject + '</b><br>')
@@ -57,7 +99,21 @@ class BlogHandler(webapp2.RequestHandler):
 
 class MainPage(BlogHandler):
     def get(self):
-        self.render('main_page.html')
+        self.response.headers['Content-Type'] = 'text/plain'
+        visits = self.request.cookies.get('visits', '0')
+        #make sure visits is an integer
+        if visits.isdigit():
+            visits = int(visits) + 1
+            h = hashlib.sha256('welcome gevann').hexdigest()
+
+        else:
+            visits = 0
+        # visits += 1
+        self.response.headers.add_header('Set-Cookie', 'visits=%s' % visits)
+        self.response.headers.add_header('Set-Cookie', 'hashes=%s' % h)
+        self.write("You've been here %s times!" % visits)
+        self.write("You're hash is %s " % h)
+        # self.render('main_page.html')
 
 ##### blog stuff
 
@@ -76,8 +132,9 @@ class Post(db.Model):
 
 class BlogFront(BlogHandler):
     def get(self):
+        username = User.get_current_user()
         posts = db.GqlQuery("select * from Post order by created desc limit 10")
-        self.render('front.html', posts = posts)
+        self.render('front.html', posts = posts, username = username)
         self.write(posts)
 
 class PostPage(BlogHandler):
@@ -93,7 +150,8 @@ class PostPage(BlogHandler):
 
 class NewPost(BlogHandler):
     def get(self):
-        self.render("newpost.html")
+        username = User.get_current_user()
+        self.render("newpost.html", username = username)
 
     def post(self):
         subject = self.request.get('subject')
@@ -141,6 +199,10 @@ class User(db.Model):
     email = db.StringProperty()
 
     @classmethod
+    def get_current_user(cls):
+        return User.name
+
+    @classmethod
     def get_all(cls, sortby='name'):
         return User.all().order(sortby)
 
@@ -149,18 +211,19 @@ class User(db.Model):
         return User.all().filter('name =', name).get()
 
     @classmethod
+    def get_by_id(cls, ids, parent=None, **kwargs):
+        return User.all().filter('ids = ', ids).get()
+
+    @classmethod
     def add(cls, name, pw, email=None):
         u = User(name = name, password = pw, email = email)
         u.put()
         return u
 
-
 class LoginHandler(BlogHandler):
     def write_error(self):
-        self.write(
-            'login-form.html',
-            error_login="Invalid Login"
-        )
+        # self.write('login-form.html', error_login="Invalid Login")
+        self.render('login-form.html', error_login="Invalid Login")
 
     def get(self):
         # self.write('login-form.html')
@@ -174,15 +237,15 @@ class LoginHandler(BlogHandler):
         if username and password:
             rs = User.get_by_name(username)
 
-            # if rs and valid_password(username, password, rs.password):
-            if rs:
+            if rs and valid_password(password):
+                # self.login(username)
+                self.response.headers.add_header('Set-Cookie', 'username=%s' % username)
                 self.set_secure_cookie('user_id', str(rs.key().id()))
-                self.redirect('/')
+                self.redirect('/welcome?username=' + username)
             else:
                 self.write_error()
         else:
             self.write_error()
-
 
 class Signup(BlogHandler):
 
@@ -221,6 +284,8 @@ class Signup(BlogHandler):
 
 class LogoutHandler(BlogHandler):
     def get(self):
+        # self.read_secure_cookie(self, User.get_current_user())
+        self.clear_secure_cookie(self, User.get_current_user())
         self.logout()
         self.redirect('/')
 

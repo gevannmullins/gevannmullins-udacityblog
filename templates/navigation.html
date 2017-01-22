@@ -3,24 +3,6 @@
 
     <div class="container-fluid">
 
-        <!-- login container -->
-        <div class="login_form_container">
-            <div class="trans_white_bg z0"></div>
-            <!-- login form -->
-            <div class="z5">
-{#                {% include "login-form.html" %}#}
-            </div>
-        </div>
-
-        <!-- signup container -->
-        <div class="signup_form_container">
-            <div class="trans_white_bg z0"></div>
-            <!-- signup form -->
-            <div id="signup" class="z5">
-{#                {% include "signup-form.html" %}#}
-            </div>
-        </div>
-
         <div class="navbar-header">
             <a class="navbar-toggle">
                 <span class="sr-only">Toggle navigation</span>
@@ -41,11 +23,9 @@
                 {% else %}
                     <div class="form-group">
                         <a href="/login" class="btn btn-primary ">Login</a>
-{#                        <button id="login_btn" class="btn btn-primary ">Login</button>#}
                     </div>
                     <div class="form-group">
                         <a href="/signup" class="btn btn-primary ">Signup</a>
-{#                        <button id="signup_btn" class="btn btn-primary">Signup</button>#}
                     </div>
                 {% endif %}
 
@@ -55,11 +35,10 @@
             {% if username %}
             <ul id="navigation" class="nav navbar-nav text-center">
                 {% set navigation_links = [
-                ('/', 'index', 'Home'),
                 ('/blog', 'blog', 'Blogs'),
                 ('/newpost', 'newpost', 'New Post'),
                 ] -%}
-                {% set active_page = active_page|default('index') -%}
+                {% set active_page = active_page|default('blog') -%}
 
                 {% for href, id, caption in navigation_links %}
                 <li
