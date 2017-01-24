@@ -2,24 +2,33 @@
 
 {% block content %}
 
-    <div class="col-lg-3"></div>
-    <div class="col-lg-6 text-center">
-        <p>Signup:</p>
-        <form method="post">
-            <input type="text" name="username" class="form-control" value="{{ username }}" placeholder="Username">
-            <span>{{ error_username }}</span>
-            <input type="password" name="password" class="form-control" value="" placeholder="Password">
-            <span>{{ error_password }}</span>
-            <input type="password" name="verify" class="form-control" value="" placeholder="Re-type Password">
-            <span>{{ error_verify }}</span>
-            <input type="text" name="email" class="form-control" value="{{ email }}" placeholder="Email (Optional)">
-            <span>{{ error_email }}</span>
-            <input class="btn btn-primary" type="submit" />
-        </form>
-        <br />
-        <p>Already have an account? <a href="/login">Click Here</a> to login. </p>
-    </div>
-    <div class="col-lg-3"></div>
+    <h2>Signup</h2>
+    <form method="post">
 
+        <div class="form-group">
+            <div class="label">Username</div>
+            <div><input type="text" name="username" value="{{ username }}" class="form-control"></div>
+            <div class="error">{{ error_username }}</div>
+        </div>
+
+        <div class="form-group">
+            <div class="label">Password</div>
+            <div><input type="password" name="password" value="" class="form-control"></div>
+            <div class="error">{{ error_password }}</div>
+        </div>
+
+        <div class="form-group">
+            <div class="label">Verify Password</div>
+            <div><input type="password" name="verify" value="" class="form-control"></div>
+            <div class="error">{{ error_verify }}</div>
+        </div>
+
+        <div class="form-group">
+            <div class="label">Email (optional)</div>
+            <div><input type="text" name="email" value="{{ email }}" class="form-control"></div>
+            <div class="error">{{ error_email }}</div>
+        </div>
+
+        <input type="submit" class="btn btn-primary">
+    </form>
 {% endblock %}
-

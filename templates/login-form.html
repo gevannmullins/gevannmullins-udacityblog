@@ -1,21 +1,23 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
 
-    <div class="col-lg-3"></div>
-    <div class="col-lg-6 text-center">
-        <form method="post">
-            <p>Please Enter:</p>
-            <div class="{{'hidden' if not error_login else ''}}">
-                <div class="alert alert-danger">{{error_login}}</div>
-            </div>
-            <input type="text" name="username" id="username" value="{{ username }}" class="form-control" placeholder="Username">
-            <input type="password" name="password" value="" class="form-control" placeholder="Password">
-            <button type="submit" class="btn btn-primary">Sign In</button>
-        </form>
-        <br />
-        <p>Don't have an account? No problem <a href="/signup">Click Here</a> to signup!</p>
+<form method="post">
+    <!-- input - username -->
+    <div class="form-group">
+        <div class="label">Username</div>
+        <div><input type="text" name="username" value="{{ username }}" class="form-control"></div>
+        <div class="error">{{ error_username }}</div>
     </div>
-    <div class="col-lg-3"></div>
+    <!-- input - password -->
+    <div class="form-group">
+        <div class="label">Password</div>
+        <div><input type="password" name="password" value="" class="form-control"></div>
+        <div class="error">{{ error_password }}</div>
+    </div>
+    <!-- submit button -->
+    <input type="submit" class="btn btn-primary">
+
+</form>
 
 {% endblock %}
