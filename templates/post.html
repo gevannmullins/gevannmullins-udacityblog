@@ -1,54 +1,59 @@
-{% block head %}
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!-- page requires style sheet locations to be defined -->
+{% block style_content %}
     <link type="text/css" rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"/>
     <link type="text/css" rel="stylesheet" href="../static/custom.css"/>
-    <title>Gevann Mullins Udacity Blog</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css?family=Bilbo+Swash+Caps|Calligraffitti|Homemade+Apple|Nothing+You+Could+Do|Tangerine');
-        #web_title {
-            color: #ffffff;
-
-            /*font-family: 'Tangerine', cursive;*/
-            /*font-family: 'Homemade Apple', cursive;*/
-            /*font-family: 'Nothing You Could Do', cursive;*/
-            /*font-family: 'Calligraffitti', cursive;*/
-            font-family: 'Bilbo Swash Caps', cursive;
-            font-size: 122px;
-            text-shadow: #0f0f0f 8px 8px 8px 8px;
-        }
-
-        #web_title:after {
-            content: "Web Blogs for Developers";
-            color: #ffffff;
-            font-family: "Calligraffitti", cursive;
-            font-size: 14px;
-        }
-
-    </style>
 {% endblock %}
 
-<div class="container-fluid bordered padding_15">
+<div class="container">
     <div class="row">
-        <div class="col-lg-12">
 
-            <div class="post-title">
-                <a href="/blog/{{ p.key().id() }}">{{ p.subject }}</a>
+        <div class="col-xs-12 bordered_1_white padding_15">
+            <div class="trans_black_bg"></div>
+
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <a href="/blog/{{ p.key().id() }}"><h1>{{ p.subject }}</h1></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    Written by: <span class="fontCam">{{ p.created_by }}</span>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                    Post Date: {{ p.created.strftime("%b %d, %Y") }}
+                </div>
+            </div>
+            <div class="row">
+                <hr class="line_divider_white z5"/>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    {{ p._render_text | safe }}
+                </div>
+            </div>
+            <div class="row">
+                <hr class="line_divider_white z5"/>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <a href="/likes?entry={{ p.key().id() }}"> Like </a> |
+                    <a href="/hate?entry_id={{ p.key().id() }}"> Hate </a> |
+                    <a href="/comment?entry_id={{ p.key().id() }}"> Comment </a>
+                </div>
+
+                <div class="col-xs-6 text-right">
+                    {% if username %}
+                        User Menu
+                    {% endif %}
+                </div>
+
             </div>
 
-            <div>
-                {{ p.created.strftime("%b %d, %Y") }} | Created by: {{ p.created_by }}
-                <hr width="100%" style="border:2px solid #2b669a;" />
-            </div>
 
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
 
-            <div class="post-content">
-                {{ p._render_text | safe }}
-            </div>
 
-        </div>
-    </div>
 </div>
+
+

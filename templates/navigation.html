@@ -1,4 +1,5 @@
 {% block navbar %}
+
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="slide-nav">
 
     <div class="container-fluid">
@@ -32,45 +33,35 @@
             </div>
 
             <!-- navigation links -->
-            {% if username %}
             <ul id="navigation" class="nav navbar-nav text-center">
-                {% set navigation_links = [
-                ('/blog', 'blog', 'Blogs'),
-                ('/newpost', 'newpost', 'New Post'),
-                ] -%}
-                {% set active_page = active_page|default('blog') -%}
+                {% if username %}
+                    {% set navigation_links = [
+                    ('/', 'home', 'Home'),
+                    ('/blog', 'blog', 'Blogs'),
+                    ('/blog/newpost', 'newpost', 'New Post'),
+                    ] %}
+                    {% set active_page = active_page|default('home') %}
 
+                {% else %}
+                    {% set navigation_links = [
+                    ('/', 'home', 'Home'),
+                    ('/blog', 'blog', 'Blogs'),
+                    ] %}
+                    {% set active_page = active_page|default('home') %}
+
+                {% endif %}
                 {% for href, id, caption in navigation_links %}
-                <li
-                {% if id == active_page %} class="active"{% endif %}>
-                <a href="{{ href|e }}">{{ caption|e }}</a>
-                </li>
+                    <li{% if id == active_page %} class="active"{% endif %}>
+                        <a href="{{ href|e }}">{{ caption|e }}</a>
+                    </li>
                 {% endfor %}
             </ul>
 
-            {% endif %}
-<!--
-{#            <ul id="navigation" class="nav navbar-nav text-center">#}
-{#                {% set navigation_links = [#}
-{#                ('/', 'index', 'Home'),#}
-{#                ('/blog', 'blog', 'Blogs'),#}
-{#                ('/welcome', 'welcome', 'Welcome'),#}
-{#                ('/about/', 'about', 'About')#}
-{#                ] -%}#}
-{#                {% set active_page = active_page|default('index') -%}#}
-{##}
-{#                {% for href, id, caption in navigation_links %}#}
-{#                <li#}
-{#                {% if id == active_page %} class="active"{% endif %}>#}
-{#                <a href="{{ href|e }}">{{ caption|e }}</a>#}
-{#                </li>#}
-{#                {% endfor %}#}
-{#            </ul>#}
--->
         </div>
 
     </div>
 
 </div>
+
 
 {% endblock %}

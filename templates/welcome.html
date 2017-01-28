@@ -1,7 +1,12 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h2>Welcome, {{ username }}!</h2>
+            <p>Thank you for logging in. Feel free to do as you please.</p>
+            <p>Cookie value is {{ name }}</p>
 
-    This is the welcome page for the logged in user.
-
+        </div>
+    </div>
 {% endblock %}

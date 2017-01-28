@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block webtitle %}
+    <img src="../images/webtitle.svg" width="100%" style="max-width: 600px;" />
+{% endblock %}
+
 {% block content %}
   {{post.render() | safe}}
 {% endblock %}

@@ -2,8 +2,8 @@
 <html>
     <head>
         <title>Udacity Blog</title>
-        {% block style_content %}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        {% block style_content %}
         <link type="text/css" rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css" />
         <link type="text/css" rel="stylesheet" href="static/custom.css"/>
         {% endblock %}
@@ -18,27 +18,34 @@
     <div id="header_section" class="container">
         <div class="row">
             <div id="header_title" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center padding_15">
+                <div id="logoFeature" class="feature_bg z0"></div>
+                <!--<div id="logoFeature" class="z5"></div>-->
+                <div class="z5">
                 {% block webtitle %}
                     <img src="images/webtitle.svg" width="100%" style="max-width: 600px;" />
                 {% endblock %}
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Body Section -->
-    <div id="content_section" class="container">
+    <div id="content_section">
         {% block content %}
         {% endblock %}
     </div>
 
     <!-- Footer Section -->
-    {% include 'footer.html' %}
+    <div id="footer_section" class="z9">
+        {% include 'footer.html' %}
+    </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="static/jquery-3.1.1.min.js" language="javascript" type="text/javascript" rel="script"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="static/bootstrap/js/bootstrap.min.js"></script>
     <!--Custom scripts-->
+    <script src="static/custom.js" language="JavaScript"></script>
     <script language="JavaScript">
         function bgSize() {
             var e = window, a = 'inner';
@@ -54,7 +61,44 @@
             bgSize();
         }
     </script>
-    <script src="static/custom.js" language="JavaScript"></script>
+    <!-- value add for logo -->
+    <script language="JavaScript">
+/*        $(document).ready(function(){
+            function randNumber(maxNum, lowNum) {
+                return Math.floor((Math.random() * maxNum) + lowNum);
+            }
+            function spawnDiv(cWidth, cHeight, rDim) {
+                var div = document.createElement("div");
+                div.style.position = "absolute";
+                div.style.left = randNumber(cWidth, 10) + 'px';
+                div.style.top = randNumber(cHeight, 10) + 'px';
+                div.style.width = randNumber(rDim, 10) + "px";
+                div.style.height = randNumber(rDim, 10) + "px";
+                div.style.background = "#000000";
+                div.style.opacity = "0." + randNumber(5,1);
+                div.style.display = "none";
+{#                div.addClass('spawnDiv');#}
+                return div;
+            }
+
+            var randWidth = randNumber(randNumber(300, 11), 15);
+            var cont = document.getElementById("logoFeature");
+            var randDim = randNumber(randWidth,randWidth);
+            var contWidth = cont.offsetWidth - (randDim + 10);
+            var contHeight = cont.offsetHeight - (randDim + 10);
+
+
+            window.setInterval(function(){
+                /// call your function here
+                cont.appendChild(spawnDiv(contWidth, contHeight, randDim));
+{#                $('#logoFeature div').fadeIn(2500).fadeOut(1500).remove();#}
+                $('#logoFeature div').fadeToggle(randNumber(2000, 500)).remove;
+{#                $('#logoFeature div').fadeOut(1000);#}
+            }, 2500);
+
+        })
+        */
+    </script>
 
 </body>
 

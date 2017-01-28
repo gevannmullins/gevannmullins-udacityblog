@@ -1,33 +1,28 @@
-{% extends "base.html" %}
+{% extends "./base.html" %}
+
+{% block style_content %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link type="text/css" rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="../static/custom.css"/>
+{% endblock %}
+
+{% block webtitle %}
+    <img src="../images/webtitle.svg" width="100%" style="max-width: 600px;"/>
+{% endblock %}
 
 {% block content %}
-<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-center">
+    <div class="col-lg-3 col-md-3"></div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
+        <h2>new post</h2>
 
-</div>
-<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
+        <form method="post">
+            <input type="text" name="subject" value="{{ subject }}" class="form-control" placeholder="subject">
+            <textarea name="content" class="form-control" placeholder="Blog Content">{{ content }}</textarea>
 
-  <h2>new post</h2>
+            <div class="error">{{ error }}</div>
 
-  <form method="post">
-    <label>
-      <div>subject</div>
-      <input type="text" name="subject" value="{{subject}}" class="form-control">
-    </label>
-
-    <label>
-      <div>blog</div>
-      <textarea name="content" class="form-control">{{content}}</textarea>
-    </label>
-
-    <div class="error">{{error}}</div>
-
-    <input type="hidden" name="created_by" value="{{ created_by }}" />
-
-    <input type="submit" class="btn btn-primary" />
-  </form>
-
-</div>
-<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-center">
-
-</div>
+            <input type="submit" class="btn btn-primary">
+        </form>
+    </div>
+    <div class="col-lg-3 col-md-3"></div>
 {% endblock %}

@@ -1,34 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div class="row">
+        <div class="col-lg-3 col-md-3"></div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 bordered_1_white padding_15 text-center">
+            <div class="trans_black_bg z0"></div>
+            <div class="padding_15 z5">
+                <h2>Signup</h2>
+                <br />
+                <form method="post">
 
-    <h2>Signup</h2>
-    <form method="post">
+                    <!-- username input group -->
+                    <div class="form-group">
+                        <div class="label">Username</div>
+                        <div><input type="text" name="username" value="{{ username }}" class="form-control"></div>
+                        <div class="error">{{ error_username }}</div>
+                    </div>
 
-        <div class="form-group">
-            <div class="label">Username</div>
-            <div><input type="text" name="username" value="{{ username }}" class="form-control"></div>
-            <div class="error">{{ error_username }}</div>
+                    <!-- password input group -->
+                    <div class="form-group">
+                        <div class="label">Password</div>
+                        <div><input type="password" name="password" value="" class="form-control"></div>
+                        <div class="error">{{ error_password }}</div>
+                    </div>
+
+                    <!-- re-type password input group -->
+                    <div class="form-group">
+                        <div class="label">Verify Password</div>
+                        <div><input type="password" name="verify" value="" class="form-control"></div>
+                        <div class="error">{{ error_verify }}</div>
+                    </div>
+
+                    <!-- email input group -->
+                    <div class="form-group">
+                        <div class="label">Email (optional)</div>
+                        <div><input type="text" name="email" value="{{ email }}" class="form-control"></div>
+                        <div class="error">{{ error_email }}</div>
+                    </div>
+
+                    <input type="submit" class="btn btn-primary">
+
+                </form>
+
+                <p>Already a member? <a href="/login">Click here</a> to Login</p>
+            </div>
         </div>
+        <div class="col-lg-3 col-md-3"></div>
 
-        <div class="form-group">
-            <div class="label">Password</div>
-            <div><input type="password" name="password" value="" class="form-control"></div>
-            <div class="error">{{ error_password }}</div>
-        </div>
-
-        <div class="form-group">
-            <div class="label">Verify Password</div>
-            <div><input type="password" name="verify" value="" class="form-control"></div>
-            <div class="error">{{ error_verify }}</div>
-        </div>
-
-        <div class="form-group">
-            <div class="label">Email (optional)</div>
-            <div><input type="text" name="email" value="{{ email }}" class="form-control"></div>
-            <div class="error">{{ error_email }}</div>
-        </div>
-
-        <input type="submit" class="btn btn-primary">
-    </form>
+    </div>
 {% endblock %}

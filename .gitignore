@@ -1,6 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
+/.idea/
+/.git/
+/.git/*
+/.git
+/.git/*.*
 /.gitignore
-/.idea
-
-/gevannmullins-udacityblog.iml
-/_mac/

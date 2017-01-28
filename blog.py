@@ -2,6 +2,7 @@ import os
 import re
 import webapp2
 import jinja2
+import json
 import cgi
 import datetime
 import random
@@ -15,8 +16,9 @@ from google.appengine.ext import db
 
 # set the root for templates
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
-                               autoescape=True)
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), autoescape=True)
+
+SECRET = 'gevann udacity blog'
 
 
 def render_str(template, **params):
@@ -40,9 +42,16 @@ def render_post(response, post):
     response.out.write(post.content)
 
 
+##### The main page handler
 class MainPage(BlogHandler):
     def get(self):
-        self.render('main.html')
+        # Check if the username cookie exists and save value to variable "username"
+        username = self.request.cookies.get('username')
+        # If the user already logged in they can not return to the main page
+        if username:
+            self.redirect('/welcome')
+        else:
+            self.render('main.html')
 
 
 ##### blog stuff
@@ -51,10 +60,16 @@ def blog_key(name='default'):
     return db.Key.from_path('blogs', name)
 
 
+
+
+##### the database model handlers
+
+## Post Model Class
 class Post(db.Model):
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
+    created_by = db.StringProperty(required=True)
     last_modified = db.DateTimeProperty(auto_now=True)
 
     def render(self):
@@ -62,14 +77,93 @@ class Post(db.Model):
         return render_str("post.html", p=self)
 
 
-class BlogFront(BlogHandler):
+## User Model Class
+class User(db.Model):
+    name = db.StringProperty(required=True)
+    password = db.StringProperty(required=True)
+    email = db.StringProperty()
+
+    @classmethod
+    def all_users(cls, sortby='name'):
+        return User.all().order(sortby)
+
+    @classmethod
+    def user_by_name(cls, name):
+        return User.all().filter('name =', name).get()
+
+    @classmethod
+    def user_by_id(cls, ids):
+        return User.all().filter('ids = ', ids).get()
+
+    @classmethod
+    def add_user(cls, name, pw, email=None):
+        u = User(name=name, password=pw, email=email)
+        u.put()
+        return u
+
+
+## Post Like Model Class
+class Likes(db.Model):
+    user = db.IntegerProperty(required=False)
+    entry = db.IntegerProperty(required=False)
+    created = db.DateTimeProperty(auto_now_add=True)
+
+    @classmethod
+    def get_by_user(cls, uid):
+        return Likes.all().filter('user =', uid).order('-entry')
+
+    @classmethod
+    def get_by_entry(cls, uid, eid):
+        return Likes.all().filter('user =', uid).filter('entry =', eid).order('-entry').get()
+
+    @classmethod
+    def add(cls, user, entry):
+        f = Likes(user=user, entry=entry)
+        f.put()
+        return f
+
+    @classmethod
+    def count_entry_likes(cls, entry):
+        entry_count = db.GqlQuery("SELECT * FROM Likes")
+        return entry_count.count()
+
+
+
+    @classmethod
+    def remove(cls, user, entry):
+        f = cls.get_by_entry(uid=user, eid=entry)
+
+        # make sure that logged in user is unliking their liked entry
+        if f and f.user == user:
+            f.delete()
+            return True
+
+class LikesHandler(BlogHandler):
     def get(self):
         posts = db.GqlQuery("select * from Post order by created desc limit 10")
-        self.render('front.html', posts=posts)
+        username = self.request.cookies.get('username')
+        user = User.user_by_name(username)
+        user_id = user.key().id()
+        entry = self.request.get('entry')
+        Likes.add(user_id, int(entry))
+        entry_likes = Likes.count_entry_likes(entry)
+        self.render('front.html',  posts=posts, entry_likes=entry_likes)
+        # self.redirect('/blog', posts=posts, entry_likes=entry_likes)
+
+
+class BlogFront(BlogHandler):
+    def get(self):
+        user_cookie = self.request.cookies.get('username')
+        posts = db.GqlQuery("select * from Post order by created desc limit 10")
+        if user_cookie:
+            self.render('front.html', posts=posts, username=user_cookie, name=user_cookie)
+        else:
+            self.render('front.html', posts=posts)
 
 
 class PostPage(BlogHandler):
     def get(self, post_id):
+        user_cookie = self.request.cookies.get('username')
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
 
@@ -77,19 +171,23 @@ class PostPage(BlogHandler):
             self.error(404)
             return
 
-        self.render("permalink.html", post=post)
+        self.render("permalink.html", post=post, username=user_cookie, name=user_cookie)
 
 
 class NewPost(BlogHandler):
     def get(self):
-        self.render("newpost.html")
+        username = self.request.cookies.get('username')
+        self.render("newpost.html", username=username)
 
     def post(self):
+
         subject = self.request.get('subject')
         content = self.request.get('content')
+        user_cookie = self.request.cookies.get('username')
+        name_cookie = self.request.cookies.get('name')
 
         if subject and content:
-            p = Post(parent=blog_key(), subject=subject, content=content)
+            p = Post(parent=blog_key(), subject=subject, content=content, username=user_cookie, created_by=user_cookie)
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
@@ -133,13 +231,28 @@ def valid_email(email):
 
 
 class Login(BlogHandler):
+    def write_error(self):
+        self.write('login-form.html', error_login="Username and/or Password do not match!")
+
     def get(self):
-        self.render("login-form.html")
+        self.render('login-form.html')
 
     def post(self):
-        have_error = False
+        # validate credentials
         username = self.request.get('username')
         password = self.request.get('password')
+
+        if username and password:
+            u = User.user_by_name(username)
+
+            if u.password == hashlib.sha256(password).hexdigest():
+                self.response.set_cookie('username', str(username))
+                self.response.set_cookie('name', str(username))
+                self.redirect('/welcome?username=' + username)
+            else:
+                self.write_error()
+        else:
+            self.write_error()
 
 
 class Signup(BlogHandler):
@@ -152,8 +265,16 @@ class Signup(BlogHandler):
         password = self.request.get('password')
         verify = self.request.get('verify')
         email = self.request.get('email')
+        secure_password = hashlib.sha256(password).hexdigest()
+
+        # check if username already exists
 
         params = dict(username=username, email=email)
+
+        db_user = User.user_by_name(username)
+        if db_user:
+            params['error_username'] = "Username already exists."
+            have_error = True
 
         if not valid_username(username):
             params['error_username'] = "That's not a valid username."
@@ -173,25 +294,40 @@ class Signup(BlogHandler):
         if have_error:
             self.render('signup-form.html', **params)
         else:
+            User.add_user(username, secure_password, email)
+            self.response.headers['Content-Type'] = 'text/plain'
+            self.response.headers.add_header('Set-Cookie', 'username=%s' % str(username))
+            self.response.headers.add_header('Set-Cookie', 'name=%s' % str(username))
             self.redirect('/welcome?username=' + username)
+
+
+# logout handler class
+class Logout(BlogHandler):
+    def get(self):
+        self.response.delete_cookie('username')
+        self.response.delete_cookie('name')
+        self.redirect('/')
 
 
 class Welcome(BlogHandler):
     def get(self):
-        username = self.request.get('username')
-        if valid_username(username):
-            self.render('welcome.html', username=username)
+        user_cookie = self.request.cookies.get('username')
+        name_cookie = self.request.cookies.get('name')
+        if user_cookie:
+            self.render('welcome.html', username=user_cookie, name=name_cookie)
         else:
-            self.redirect('/unit2/signup')
+            self.redirect('/signup')
 
 
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/rot13', Rot13),
                                ('/login', Login),
+                               ('/logout', Logout),
                                ('/signup', Signup),
                                ('/welcome', Welcome),
                                ('/blog/?', BlogFront),
                                ('/blog/([0-9]+)', PostPage),
                                ('/blog/newpost', NewPost),
+                               ('/likes', LikesHandler),
                                ],
                               debug=True)
