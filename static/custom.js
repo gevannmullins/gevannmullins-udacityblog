@@ -64,6 +64,14 @@ $(document).ready(function () {
             $(selected).removeClass('slide-active');
         }
     });
+
+    // comment form scripts
+    // $('#comment_btn').on('click', function(e){
+    //     e.preventDefault();
+    //     alert('test');
+    // });
+    var comment_form_container = $('#comment_form_container');
+
 });
 
 

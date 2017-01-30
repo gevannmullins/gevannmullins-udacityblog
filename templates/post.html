@@ -2,6 +2,18 @@
 {% block style_content %}
     <link type="text/css" rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"/>
     <link type="text/css" rel="stylesheet" href="../static/custom.css"/>
+    <style>
+{#        @import url('https://fonts.googleapis.com/css?family=Bilbo+Swash+Caps|Calligraffitti|Homemade+Apple|Nothing+You+Could+Do|Tangerine');#}
+{##}
+{#        .handwritten {#}
+{#            color: #ffffff;#}
+{#            font-family: 'Bilbo Swash Caps', cursive;#}
+{#            font-size: 30px;#}
+{#            font-weight: 100;#}
+{#        }#}
+
+
+    </style>
 {% endblock %}
 
 <div class="container">
@@ -11,34 +23,97 @@
             <div class="trans_black_bg"></div>
 
             <div class="row">
+                <!-- blog subject container -->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <a href="/blog/{{ p.key().id() }}"><h1>{{ p.subject }}</h1></a>
                 </div>
             </div>
+
             <div class="row">
+                <!-- blog creator info container -->
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                     Written by: <span class="fontCam">{{ p.created_by }}</span>
                 </div>
+                <!-- blog date info container -->
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
                     Post Date: {{ p.created.strftime("%b %d, %Y") }}
                 </div>
             </div>
+
             <div class="row">
                 <hr class="line_divider_white z5"/>
             </div>
+
             <div class="row">
+                <!-- blog content container -->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    {{ p._render_text | safe }}
+                    <span class="handwritten">{{ p._render_text | safe }}</span>
+
+                    <!-- read more test -->
+                    <input type="checkbox" class="read-more-state" id="post-1" />
+                    <p class="read-more-wrap">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                        <span class="read-more-target">
+                            Libero fuga facilis vel consectetur quos sapiente deleniti eveniet dolores tempore eos deserunt officia quis ab?
+                            Excepturi vero tempore minus beatae voluptatem!
+                        </span>
+                    </p>
+                    <label for="post-1" class="read-more-trigger"></label>
+                    <!-- end test -->
+
                 </div>
             </div>
+
             <div class="row">
                 <hr class="line_divider_white z5"/>
             </div>
+
+            <!-- display saved comments -->
+            <div class="row">
+                <!-- blog comments container -->
+                <div class="col-xs-12 text-right">
+                    <u>User Comments:</u>
+                    {% if not usercomments %}
+                        <p>No Comments Available.</p>
+                    {% else %}
+                        {{ usercomments }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- comment form hidden from view -->
+            <div id="comment_form_container">
+                <div class="row">
+                    <hr class="line_divider_white"/>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <!-- comment form -->
+                        <form method="post">
+                            <input type="hidden" name="form_name" value="comments_form">
+                            <input type="hidden" name="entry_id" value="{{ p.key().id() }}">
+                            <div class="form-group">
+                                <label class="label">Enter your comment:</label>
+                                <textarea name="comment" class="form-control" placeholder="Comment here ..."></textarea>
+                            </div>
+                            <input type="submit" class="btn btn-primary form-control">
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <hr class="line_divider_white z5"/>
+            </div>
+
             <div class="row">
                 <div class="col-xs-6">
-                    <a href="/likes?entry={{ p.key().id() }}"> Like </a> |
-                    <a href="/hate?entry_id={{ p.key().id() }}"> Hate </a> |
-                    <a href="/comment?entry_id={{ p.key().id() }}"> Comment </a>
+                    <form method="post" class="inline_display">
+                        <input type="hidden" name="form_name" value="likes_form">
+                        <input type="hidden" name="entry_id" value="{{ p.key().id() }}">
+                        <input type="submit" class="btn btn-primary form-control" value="Like">
+                    </form>
+                    <button id="comment_btn" class="inline_display btn btn-primary" href="/blog/likes?entry={{ p.key().id() }}"> Comment</button>
                 </div>
 
                 <div class="col-xs-6 text-right">

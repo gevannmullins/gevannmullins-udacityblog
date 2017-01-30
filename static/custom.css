@@ -1,6 +1,20 @@
 /**
 *   This is my custom styles for this project/assignments
 */
+@import url('https://fonts.googleapis.com/css?family=Bilbo+Swash+Caps|Calligraffitti|Homemade+Apple|Nothing+You+Could+Do|Tangerine');
+
+.handwritten {
+    color: #ffffff;
+    font-family: 'Bilbo Swash Caps', cursive;
+    font-size: 30px;
+    font-weight: 100;
+    width: 200px;
+    height: 50px;
+    overflow: hidden;
+    white-space:nowrap;
+    text-overflow: ellipsis;
+}
+
 
 body {
     padding: 0 0 0 0;
@@ -224,6 +238,16 @@ button {
     max-width: 420px;
     padding: 10px 10px 10px 10px;
     overflow: hidden;
+}
+
+.inline_display {
+    display: inline-block;
+
+}
+
+#comment_form_container {
+    display: none;
+    height: 0;
 }
 
 .div_cont {
@@ -465,4 +489,53 @@ body.slide-active {
     }
 
 }
+
+
+
+
+
+
+
+
+/* Test styles */
+.read-more-state {
+    display: none;
+}
+
+.read-more-target {
+    opacity: 0;
+    max-height: 0;
+    font-size: 0;
+    transition: .25s ease;
+}
+
+.read-more-state:checked ~ .read-more-wrap .read-more-target {
+    opacity: 1;
+    font-size: inherit;
+    max-height: 999em;
+}
+
+.read-more-state ~ .read-more-trigger:before {
+    content: 'Show more';
+}
+
+.read-more-state:checked ~ .read-more-trigger:before {
+    content: 'Show less';
+}
+
+.read-more-trigger {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0 .5em;
+    color: #666;
+    font-size: .9em;
+    line-height: 2;
+    border: 1px solid #ddd;
+    border-radius: .25em;
+}
+
+
+
+
+
 
