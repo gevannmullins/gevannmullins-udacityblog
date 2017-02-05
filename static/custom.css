@@ -3,6 +3,41 @@
 */
 @import url('https://fonts.googleapis.com/css?family=Bilbo+Swash+Caps|Calligraffitti|Homemade+Apple|Nothing+You+Could+Do|Tangerine');
 
+
+
+
+
+body {
+    padding-top: 120px;
+    padding-bottom: 100px;
+    margin-bottom:100px;
+    margin-top:120px;
+
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 100px;
+    margin-bottom:100px;
+}
+
+@media (min-width: 767px) {
+    .navbar {
+        padding: 0 0;
+        -webkit-transition: background 0.5s ease-in-out, padding 0.5s ease-in-out;
+        -moz-transition: background 0.5s ease-in-out, padding 0.5s ease-in-out;
+        transition: background 0.5s ease-in-out, padding 0.5s ease-in-out;
+    }
+
+    .top-nav-collapse {
+        padding: 0;
+    }
+}
+
+
+
+
 .handwritten {
     color: #ffffff;
     font-family: 'Bilbo Swash Caps', cursive;
@@ -11,7 +46,7 @@
     width: 200px;
     height: 50px;
     overflow: hidden;
-    white-space:nowrap;
+    /*white-space:nowrap;*/
     text-overflow: ellipsis;
 }
 
@@ -26,11 +61,10 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     color: #ffffff;
-    margin-bottom: 40px;
 }
 
 #header_section {
-    margin-top: 55px;
+    /*margin-top: 55px;*/
 }
 
 hr {
@@ -184,6 +218,10 @@ button {
     margin: 25px 25px 25px 25px;
 }
 
+#content_section {
+    margin-bottom: 140px;
+}
+
 /*
     Font styles
 */
@@ -245,7 +283,7 @@ button {
 
 }
 
-#comment_form_container {
+.comment_form_container {
     display: none;
     height: 0;
 }
@@ -292,6 +330,7 @@ button {
     right: 0;
     color: #ffffff;
     background-color: #323232;
+
 }
 
 #footer_section_menu {
@@ -376,6 +415,11 @@ body.slide-active {
 /* un fix the navbar when active so that all the menu items are accessible */
 .navbar.navbar-fixed-top.slide-active {
     position: relative
+}
+
+.navbar {
+    border-bottom: 2px solid #ffffff;
+    box-shadow: #0f0f0f -4px 2px 20px 6px;
 }
 
 /* screw writing importants and shit, just stick it in max width since these classes are not shared between sizes */

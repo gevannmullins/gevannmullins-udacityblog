@@ -1,19 +1,21 @@
 {% extends "base.html" %}
 
-
 <!-- displaying the blogs inside the content block -->
 {% block content %}
 
-    {{ entry_likes }}
     <div class="container">
         <!-- loop through all the posts available -->
-        {% for p in posts %}
-            <br>
-            <div class="row">
-                {{ p.render() | safe }}
-            </div>
-            <br>
-        {% endfor %}
+        {{ posts.render() | safe }}
+{#        {% for p in posts.posts %}#}
+{#            <br>#}
+{#            <div class="row">#}
+{#                {{ p.render() | safe }}#}
+{#                {% for c in comments %}#}
+{#                    {{ c.content }}#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#            <br>#}
+{#        {% endfor %}#}
     </div>
 
 {% endblock %}

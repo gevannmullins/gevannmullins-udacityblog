@@ -1,7 +1,6 @@
 from db import *
 
 
-
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -12,19 +11,18 @@ class BlogHandler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
-
-
 ##### The main page handler
 class MainPage(BlogHandler):
     def get(self):
         # Check if the username cookie exists and save value to variable "username"
         username = self.request.cookies.get('username')
+        # get the latest ten posts
+        posts = Post.get_latest_ten_posts()
         # If the user already logged in they can not return to the main page
         if username:
-            self.redirect('/welcome')
+            self.render('welcome.html', posts=posts, username=username)
         else:
-            self.render('main.html')
-
+            self.render('main.html', posts=posts)
 
 ##### blog stuff
 
@@ -32,76 +30,169 @@ def blog_key(name='default'):
     return db.Key.from_path('blogs', name)
 
 
-class LikesHandler(BlogHandler):
-    def get(self):
-        posts = db.GqlQuery("select * from Post order by created desc limit 10")
-        username = self.request.cookies.get('username')
-        if username:
-            user = User.user_by_name(username)
-            user_id = user.key().id()
-            entry = self.request.get('entry')
-            Likes.add(user_id, int(entry))
-            entry_likes = Likes.count_entry_likes(entry)
-            self.render('front.html', posts=posts, entry_likes=entry_likes)
-        else:
-            self.render('front.html', posts=posts)
-            # self.redirect('/blog', posts=posts, entry_likes=entry_likes)
-
-
 class BlogFront(BlogHandler):
     def get(self):
-        user_cookie = self.request.cookies.get('username')
-        posts = db.GqlQuery("select * from Post order by created desc limit 10")
-        if user_cookie:
-            self.render('front.html', posts=posts, username=user_cookie, name=user_cookie)
+        user_name = self.request.cookies.get('username')
+
+        # Create all the variables/objects/arrays
+        blog_collect_dict = dict()
+        blog_collect_array = []
+        comment_users_array = []
+
+        # List all the blogs
+        posts = db.GqlQuery("select * from Post")
+        # Loop through each Blog
+        for post in posts:
+            # find this post id
+            post_id = post.key().id()
+            # Find all the comments related to this blog
+            post_comments = Comments.get_all_comments_by_post(post_id)
+            # for post_comment in post_comments:
+
+
+            # self.write("<br />")
+            # self.write("<br />")
+            # self.write(list(post_comments))
+            # self.write("<br />")
+            # self.write("<br />")
+            # self.write("<br />")
+            # self.write("<br />")
+            # self.write("<br />")
+            # self.write("<br />")
+
+            # find all the likes related to this blog
+            blog_likes = db.GqlQuery("select * from Likes where entry=:post_id", post_id=post_id).count()
+            # build the data collection
+            blog_collect_dict.update({"blog": post, "comments": post_comments, "likes": int(blog_likes)})
+            # save new data collection to an array
+            blog_collect_array.insert(post_id, {"blog": post, "comments": post_comments, "likes": blog_likes})
+
+        # if user_name exists then pass it along else only render the post
+        if user_name:
+            self.render('blog_entries.html', posts=posts, blog_collection=blog_collect_array, username=user_name, name=user_name)
         else:
-            self.render('front.html', posts=posts)
+            self.render('blog_entries.html', posts=posts, blog_collection=blog_collect_array)
 
-    def post(self):
-        # key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        # post = db.get(key)
-
+    def post(self, post_id):
+        # first find the name of the form
         form_name = self.request.get('form_name')
-        content = self.request.get('content')
-        username = self.request.cookies.get('username')
-        user = User.user_by_name(username)
-        user_id = user.key().id()
-        self.write(form_name)
-        self.write(username)
-        self.write(content)
-        self.write(user_id)
-        # if self.request.get('form_name') == 'comments_form':
 
-            # user = self.request.cookies.get('username')
-            # entry = self.request.get('entry')
-            # content = self.request.get('content')
-            # if entry and content:
-            #     Comments.add('gevann', entry, content)
-            #     # self.redirect('/blog')
-            #
-            #     self.render('front.html')
+        if form_name == 'comments_form':
+            blog_comments = Comments.all().filter('entry =', int(post_id)).get()
+            # comments_blog = Post.all().filter('entry =', int(post_id)).get()
+            # blog_comments = db.GqlQuery("select * from Comments where entry=:post_id order by created desc limit 10", post_id=post_id)
+
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            username = self.request.cookies.get('username')
+            user = User.user_by_name(username)
+            user_id = user.key().id()
+            likes = int(Likes.count_likes(post_id))
+
+            post_content = self.request.get('comment')
+            # post_comments = Comments.get_by_postid(int(post_id))
+
+            if username:
+                Comments.add(int(user_id), int(post_id), post_content)
+                self.redirect('/blog')
+                # self.render("permalink.html", post=post, username=username, name=username, comments=post_comments, likes=likes)
+            else:
+                Comments.add(int(100), int(post_id), post_content)
+                self.redirect('/blog')
+                # self.render('permalink.html', post=post, comments=post_comments, likes=likes)
+
+        if form_name == 'likes_form':
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            username = self.request.cookies.get('username')
+            user = User.user_by_name(username)
+            user_id = user.key().id()
+            likes = int(Likes.count_likes(post_id))
+
+            post_comments = Comments.get_all_comments()
+            if username:
+                Likes.add(int(user_id), int(post_id))
+                self.redirect("/blog")
+                # self.render("blog_entries.html", post=post, username=username, name=username, comments=post_comments, likes=likes)
+            else:
+                Likes.add(int(100), int(post_id))
+                self.redirect("/blog")
+                # self.render('blog_entries.html', post=post, comments=post_comments, likes=likes)
+
 
 class PostPage(BlogHandler):
     def get(self, post_id):
-        user_cookie = self.request.cookies.get('username')
+        # Create all the variables/objects/arrays
+        blog_collect_dict = dict()
+        blog_collect_array = []
+        # get the user_name
+        user_name = self.request.cookies.get('username')
+        # get the blog entry
+        # post = Post.get_blog_by_id(post_id)
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+        # Find all the comments related to this blog
+        comments = db.GqlQuery("select * from Comments where entry=:post_id", post_id=int(post_id)).fetch(1000)
+        # find all the likes related to this blog
+        blog_likes = db.GqlQuery("select * from Likes where entry=:post_id", post_id=int(post_id)).count()
+        # build the data collection
+        # blog_collect_dict.update({"blog": post, "comments": comments, "likes": int(blog_likes)})
+        # save new data collection to an array
+        blog_collect_array.insert(int(post_id), {"blog": post, "comments": comments, "likes": blog_likes})
+        # if user_name exist then pass it along else
 
-        if not post:
-            self.error(404)
-            return
+        # self.write(list(comments))
 
-        self.render("permalink.html", post=post, username=user_cookie, name=user_cookie)
+        if user_name:
+            self.render('blog_entry.html', post=post, blog_collection=blog_collect_array, comments=comments, blog_likes=blog_likes, username=user_name, name=user_name)
+        else:
+            self.render('blog_entry.html', post=post, blog_collection=blog_collect_array, comments=comments, blog_likes=blog_likes)
 
-    def post(self):
-        if self.request.get('form_name') == 'comments_form':
-            user = self.request.cookies.get('username')
-            entry = self.request.get('entry')
-            content = self.request.get('content')
-            if entry and content:
-                Comments.add('gevann', entry, content)
-                self.redirect('/blog')
+    def post(self, post_id):
+        # first find the name of the form
+        form_name = self.request.get('form_name')
 
+        if form_name == 'comments_form':
+            blog_comments = Comments.all().filter('entry =', int(post_id)).get()
+            # comments_blog = Post.all().filter('entry =', int(post_id)).get()
+            # blog_comments = db.GqlQuery("select * from Comments where entry=:post_id order by created desc limit 10", post_id=post_id)
+
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            username = self.request.cookies.get('username')
+            user = User.user_by_name(username)
+            user_id = user.key().id()
+            likes = int(Likes.count_likes(post_id))
+
+            post_content = self.request.get('comment')
+            # post_comments = Comments.get_by_postid(int(post_id))
+
+            if username:
+                Comments.add(int(user_id), int(post_id), post_content)
+                self.redirect("/blog/" + int(post_id))
+                # self.render("blog_entry.html", post=post, username=username, name=username)
+            else:
+                Comments.add(int(100), int(post_id), post_content)
+                self.redirect("/blog/" + int(post_id))
+                # self.render('blog_entry.html', post=post)
+
+        if form_name == 'likes_form':
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            username = self.request.cookies.get('username')
+            user = User.user_by_name(username)
+            user_id = user.key().id()
+            likes = int(Likes.count_likes(post_id))
+
+            post_comments = Comments.get_all_comments()
+            if username:
+                Likes.add(int(user_id), int(post_id))
+                self.render("/blog/" + post_id)
+                # self.render("permalink.html", post=post, username=username, name=username, comments=post_comments, likes=likes)
+            else:
+                Likes.add(int(100), int(post_id))
+                self.render("/blog/" + post_id)
+                # self.render('permalink.html', post=post, comments=post_comments, likes=likes)
 
 
 class NewPost(BlogHandler):
@@ -118,6 +209,7 @@ class NewPost(BlogHandler):
 
         if subject and content:
             p = Post(parent=blog_key(), subject=subject, content=content, username=user_cookie, created_by=user_cookie)
+            # p = Post(parent=blog_key(), subject=subject, content=content, username=user_cookie, created_by=user_cookie)
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
@@ -236,7 +328,8 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/welcome', Welcome),
                                ('/blog/?', BlogFront),
                                ('/blog/([0-9]+)', PostPage),
+                               # ('/blog/([0-9]+)', SinglePostPage),
                                ('/blog/newpost', NewPost),
-                               ('/blog/likes/?', LikesHandler),
+                               # ('/blog/likes/?', LikesHandler),
                                ],
                               debug=True)

@@ -1,49 +1,57 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Udacity Blog</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        {% block style_content %}
-        <link type="text/css" rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css" />
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Udacity Blog</title>
+    {% block style_content %}
+        <link type="text/css" rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css"/>
         <link type="text/css" rel="stylesheet" href="static/custom.css"/>
-        {% endblock %}
-    </head>
+    {% endblock %}
 
-<body id="bodyBG">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
-    <!-- Navigation Section -->
-    {% include 'navigation.html' %}
+    <style>
+    </style>
 
-    <!--Header section-->
-    <div id="header_section" class="container">
-        <div class="row">
-            <div id="header_title" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center padding_15">
-                <div id="logoFeature" class="feature_bg z0"></div>
-                <!--<div id="logoFeature" class="z5"></div>-->
-                <div class="z5">
-                {% block webtitle %}
-                    <img src="images/webtitle.svg" width="100%" style="max-width: 600px;" />
-                {% endblock %}
-                </div>
-            </div>
-        </div>
-    </div>
+</head>
 
-    <!-- Body Section -->
-    <div id="content_section">
-        {% block content %}
-        {% endblock %}
-    </div>
+<body id="bodyBG" data-spy="scroll" data-target=".navbar-fixed-top">
 
-    <!-- Footer Section -->
-    <div id="footer_section" class="z9">
-        {% include 'footer.html' %}
-    </div>
+<!-- Navigation Section -->
+{#    {% include 'navigation.html' %}#}
+{% include 'nav2.html' %}
 
+
+<!-- Body Section -->
+<div id="content_section">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<!-- Footer Section -->
+<div id="footer_section" class="z9">
+    {% include 'footer.html' %}
+</div>
+
+{% block java_scripts %}
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="static/jquery-3.1.1.min.js" language="javascript" type="text/javascript" rel="script"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Scrolling Nav JavaScript -->
+    <script src="static/jquery.easing.min.js"></script>
+    <script src="static/scrolling-nav.js"></script>
     <!--Custom scripts-->
     <script src="static/custom.js" language="JavaScript"></script>
     <script language="JavaScript">
@@ -63,60 +71,23 @@
     </script>
 
     <script language="javascript">
-        $(document).ready(function(){
-            $('#comment_btn').on('click', function(e){
+        $(document).ready(function () {
+            $('.comment_btn').on('click', function (e) {
                 e.preventDefault();
-
-{#                $('#comment_form_container').fadeIn(700).animate({#}
-{#                    height: '500px'#}
-{#                });#}
-                $('#comment_form_container').fadeIn(700);
-
+                var form_id = $(this).attr('id');
+                var form_container = $('#form_container_' + form_id);
+                if (form_container.css('display') === 'none') {
+                    form_container.fadeIn(700);
+                } else {
+                    form_container.fadeOut(700);
+                }
             });
 
         });
     </script>
 
 
-    <!-- value add for logo -->
-    <script language="JavaScript">
-/*        $(document).ready(function(){
-            function randNumber(maxNum, lowNum) {
-                return Math.floor((Math.random() * maxNum) + lowNum);
-            }
-            function spawnDiv(cWidth, cHeight, rDim) {
-                var div = document.createElement("div");
-                div.style.position = "absolute";
-                div.style.left = randNumber(cWidth, 10) + 'px';
-                div.style.top = randNumber(cHeight, 10) + 'px';
-                div.style.width = randNumber(rDim, 10) + "px";
-                div.style.height = randNumber(rDim, 10) + "px";
-                div.style.background = "#000000";
-                div.style.opacity = "0." + randNumber(5,1);
-                div.style.display = "none";
-{#                div.addClass('spawnDiv');#}
-                return div;
-            }
-
-            var randWidth = randNumber(randNumber(300, 11), 15);
-            var cont = document.getElementById("logoFeature");
-            var randDim = randNumber(randWidth,randWidth);
-            var contWidth = cont.offsetWidth - (randDim + 10);
-            var contHeight = cont.offsetHeight - (randDim + 10);
-
-
-            window.setInterval(function(){
-                /// call your function here
-                cont.appendChild(spawnDiv(contWidth, contHeight, randDim));
-{#                $('#logoFeature div').fadeIn(2500).fadeOut(1500).remove();#}
-                $('#logoFeature div').fadeToggle(randNumber(2000, 500)).remove;
-{#                $('#logoFeature div').fadeOut(1000);#}
-            }, 2500);
-
-        })
-        */
-    </script>
-
+{% endblock %}
 </body>
 
 </html>
