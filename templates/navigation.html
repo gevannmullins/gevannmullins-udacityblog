@@ -1,0 +1,67 @@
+{% block navbar %}
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="slide-nav">
+
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+            <a class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="navbar-brand" href="/">Udacity Blog</a>
+        </div>
+
+        <div id="slidemenu" style="margin-right: 15px;">
+
+            <!-- login and register button container -->
+            <div class="navbar-form navbar-right text-center">
+                {% if username %}
+                    <p style="color: #ffffff; display: inline-flex; margin-right: 15px;">Hi {{username}}!</p>
+                    <a href="/logout" class="btn btn-primary">Logout</a>
+                {% else %}
+                    <div class="form-group">
+                        <a href="/login" class="btn btn-primary ">Login</a>
+                    </div>
+                    <div class="form-group">
+                        <a href="/signup" class="btn btn-primary ">Signup</a>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- navigation links -->
+            <ul id="navigation" class="nav navbar-nav text-center">
+                {% if username %}
+                    {% set navigation_links = [
+                    ('/', 'home', 'Home'),
+                    ('/blog', 'blog', 'Blogs'),
+                    ('/blog/newpost', 'newpost', 'New Post'),
+                    ] %}
+                    {% set active_page = active_page|default('home') %}
+
+                {% else %}
+                    {% set navigation_links = [
+                    ('/', 'home', 'Home'),
+                    ('/blog', 'blog', 'Blogs'),
+                    ] %}
+                    {% set active_page = active_page|default('home') %}
+
+                {% endif %}
+                {% for href, id, caption in navigation_links %}
+                    <li{% if id == active_page %} class="active"{% endif %}>
+                        <a href="{{ href|e }}">{{ caption|e }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

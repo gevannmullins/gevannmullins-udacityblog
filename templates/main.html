@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{#{% block content %}#}
+{##}
+{#    {% for post in posts %}#}
+{##}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{##}
+{#                <div class="col-xs-12 bordered_1_white padding_15">#}
+{#                    <div class="trans_black_bg"></div>#}
+{##}
+{#                        <div class="row">#}
+{#                            <!-- blog subject container -->#}
+{#                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">#}
+{#                                <a href="/blog/{{ post.key().id() }}"><h1>{{ post.subject }}</h1></a>#}
+{#                            </div>#}
+{#                        </div>#}
+{##}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <br />#}
+{##}
+{##}
+{#    {% endfor %}#}
+{##}
+{#{% endblock %}#}
+{##}
+
+
+
+{% block content %}
+    <br />
+    <br />
+    <br />
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h3>Welcome to the MultiBlog for Udacity Students.</h3>
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <p>
+            You are welcome to browse around and look read through all the Blogs that students have written.<br />
+            <a href="/blog">Click here</a> to view all the Blogs.
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <p>
+            If you would like to create and post your own Blogs then feel free to <a href="/signup">SignUp Here</a>.
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <p>
+            Already have an account, <a href="/signup">Login Here</a>.
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <p>
+            Please note that this Blog website is a Udacity Projects and everything in here can not my taken seriously.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,10 +1,21 @@
 {% extends "base.html" %}
 
+<!-- displaying the blogs inside the content block -->
 {% block content %}
 
-  {% for p in posts %}
-    {{ p.render() | safe }}
-    <br><br>
-  {% endfor %}
+    <div class="container">
+        <!-- loop through all the posts available -->
+        {{ posts.render() | safe }}
+{#        {% for p in posts.posts %}#}
+{#            <br>#}
+{#            <div class="row">#}
+{#                {{ p.render() | safe }}#}
+{#                {% for c in comments %}#}
+{#                    {{ c.content }}#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#            <br>#}
+{#        {% endfor %}#}
+    </div>
 
 {% endblock %}

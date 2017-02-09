@@ -1,20 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link type="text/css" rel="stylesheet" href="/static/main.css" />
 
-  <title>CS 253 Blog</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Udacity Blog</title>
+    {% block style_content %}
+        <link type="text/css" rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css"/>
+        <link type="text/css" rel="stylesheet" href="static/custom.css"/>
+    {% endblock %}
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    <style>
+    </style>
+
 </head>
 
-<body>
-  <a href="/blog" class="main-title">
-    CS 253 Blog
-  </a>
+<body id="bodyBG" data-spy="scroll" data-target=".navbar-fixed-top">
 
-  <div id="content">
-  {% block content %}
-  {% endblock %}
-  </div>
+<!-- Navigation Section -->
+{#    {% include 'navigation.html' %}#}
+{% include 'nav2.html' %}
+
+
+<!-- Body Section -->
+<div id="content_section">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<!-- Footer Section -->
+<div id="footer_section" class="z9">
+    {% include 'footer.html' %}
+</div>
+
+{% block java_scripts %}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="static/jquery-3.1.1.min.js" language="javascript" type="text/javascript" rel="script"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Scrolling Nav JavaScript -->
+    <script src="static/jquery.easing.min.js"></script>
+    <script src="static/scrolling-nav.js"></script>
+    <!--Custom scripts-->
+    <script src="static/custom.js" language="JavaScript"></script>
+    <script language="JavaScript">
+        function bgSize() {
+            var e = window, a = 'inner';
+            if (!( 'innerWidth' in window )) {
+                a = 'client';
+                e = this.document.documentElement || this.document.body;
+            }
+            this.document.getElementById("bodyBG").style.backgroundSize = e[a + 'Width'] + "px " + e[a + 'Height'] + "px";
+            this.document.getElementById("bodyBG").style.backgroundPosition = "0px 0px";
+        }
+        bgSize();
+        this.window.onresize = function () {
+            bgSize();
+        }
+    </script>
+
+    <script language="javascript">
+        $(document).ready(function () {
+            $('.comment_btn').on('click', function (e) {
+                e.preventDefault();
+                var form_id = $(this).attr('id');
+                var form_container = $('#form_container_' + form_id);
+                if (form_container.css('display') === 'none') {
+                    form_container.fadeIn(700);
+                } else {
+                    form_container.fadeOut(700);
+                }
+            });
+
+        });
+    </script>
+
+
+{% endblock %}
 </body>
 
 </html>

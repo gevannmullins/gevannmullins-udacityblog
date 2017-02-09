@@ -1,5 +1,182 @@
 {% extends "base.html" %}
+{% block style_content %}
+    <link type="text/css" rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="../static/custom.css"/>
+{% endblock %}
+{##}
+{% block webtitle %}
+    <img src="../images/webtitle.svg" width="100%" style="max-width: 600px;"/>
+{% endblock %}
+
+{#{% block content %}#}
+{#    {{ post.render() | safe }}#}
+{#    {% for c in comments %}#}
+{#        {{ c.content }}#}
+{#    {% endfor %}#}
+{#{% endblock %}#}
 
 {% block content %}
-  {{post.render() | safe}}
+    {% for blog in blog_collection %}
+    <br />
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-xs-12 bordered_1_white padding_15">
+                <div class="trans_black_bg"></div>
+
+                <div class="row">
+                    <!-- blog subject container -->
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <a href="/blog/{{ blog.blog.key().id() }}"><h1>{{ blog.blog.subject }}</h1></a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- blog creator info container -->
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        Written by: <span class="fontCam">{{ blog.blog.created_by }}</span>
+                    </div>
+                    <!-- blog date info container -->
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                        Post Date: {{ blog.blog.created.strftime("%b %d, %Y") }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <hr class="line_divider_white z5"/>
+                </div>
+
+                <div class="row">
+                    <!-- blog content container -->
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <span class="handwritten">{{ blog.blog.content | safe }}</span>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <hr class="line_divider_white z5"/>
+                </div>
+
+                <!-- display saved comments -->
+                <div class="row">
+                    <!-- blog comments container -->
+                    <div class="col-xs-12 text-right">
+                        <u>User Comments:</u>
+                        {% if not blog.comments %}
+                            <p>No Comments Available.</p>
+                        {% else %}
+                            {% for comments in blog.comments %}
+                                <br/>
+                                {{ comments.created }}
+                                <br/>
+                                {{ comments.user }}
+                                <br/>
+                                {{ comments.entry }}
+                                <br/>
+                                {{ comments.content }}
+                                <br/>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- comment form hidden from view -->
+                <div id="form_container_{{ blog.blog.key().id() }}" class="comment_form_container">
+                    <div class="row">
+                        <hr class="line_divider_white"/>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <!-- comment form -->
+                            <form method="post">
+                                <input type="hidden" name="form_name" value="comments_form">
+                                <input type="hidden" name="entry_id" value="{{ blog.blog.key().id() }}">
+                                {% if username %}
+                                    <input type="hidden" name="form_name" value="{{ username }}">
+                                {% endif %}
+                                <div class="form-group">
+                                    <label class="label">Enter your comment:</label>
+                                    <textarea name="comment" class="form-control" placeholder="Comment here ..."></textarea>
+                                </div>
+                                <input type="submit" class="btn btn-primary" value="Comment">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <hr class="line_divider_white z5"/>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-6">
+
+                        <!-- Like Form -->
+                        <form method="post" class="inline_display">
+                            <input type="hidden" name="form_name" value="likes_form">
+                            <input type="hidden" name="entry_id" value="{{ blog.blog.key().id() }}">
+                            <input type="submit" class="btn btn-primary" value="Like +{{ blog.likes }}">
+                        </form>
+                        <span class="inline_display">
+                                <button id="{{ blog.blog.key().id() }}" class="btn btn-primary comment_btn">Comment</button>
+                            </span>
+                    </div>
+
+                    <div class="col-xs-6 text-right">
+                        {% if username %}
+                            User Menu
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    {% endfor %}
+
+{% endblock %}
+
+{% block java_scripts %}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="../static/jquery-3.1.1.min.js" language="javascript" type="text/javascript" rel="script"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../static/bootstrap/js/bootstrap.min.js"></script>
+    <!--Custom scripts-->
+    <script src="../static/custom.js" language="JavaScript"></script>
+    <script language="JavaScript">
+        function bgSize() {
+            var e = window, a = 'inner';
+            if (!( 'innerWidth' in window )) {
+                a = 'client';
+                e = this.document.documentElement || this.document.body;
+            }
+            this.document.getElementById("bodyBG").style.backgroundSize = e[a + 'Width'] + "px " + e[a + 'Height'] + "px";
+            this.document.getElementById("bodyBG").style.backgroundPosition = "0px 0px";
+        }
+        bgSize();
+        this.window.onresize = function () {
+            bgSize();
+        }
+    </script>
+    <script language="javascript">
+        $(document).ready(function () {
+            $('.comment_btn').on('click', function (e) {
+                e.preventDefault();
+                var form_id = $(this).attr('id');
+                var form_container = $('#form_container_' + form_id);
+                if (form_container.css('display') === 'none') {
+                    form_container.fadeIn(700);
+                } else {
+                    form_container.fadeOut(700);
+                }
+            });
+
+        });
+    </script>
 {% endblock %}

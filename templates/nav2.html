@@ -1,0 +1,116 @@
+<style>
+
+    body {
+        width: 100%;
+        height: 100%;
+    }
+
+    html {
+        width: 100%;
+        height: 100%;
+    }
+
+    @media (min-width: 767px) {
+        .navbar {
+            padding: 20px 0;
+            -webkit-transition: background .5s ease-in-out, padding .5s ease-in-out;
+            -moz-transition: background .5s ease-in-out, padding .5s ease-in-out;
+            transition: background .5s ease-in-out, padding .5s ease-in-out;
+        }
+
+        .top-nav-collapse {
+            padding: 0;
+        }
+    }
+</style>
+
+
+{% block navbar %}
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-5 col-sm-5 col-md-12 col-xs-12">
+                    <div class="navbar-header page-scroll">
+                        <div class="col-xs-2">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+
+                        </div>
+                        <div class="col-xs-10" style="text-align:left;">
+
+                            <a class="navbar-brand page-scroll" href="#bodyBG">
+                                {% block webtitle %}
+                                    <img src="../images/webtitle.svg" class="blog_logo" style="position: relative; max-width: 300px; top:-30px;"/>
+                                {% endblock %}
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-7 col-sm-7 col-md-7 col-xs-7">
+                    <!-- login and register button container -->
+                    <div class="navbar-form navbar-right text-center">
+                        {% if username %}
+                            <p style="color: #ffffff; display: inline-flex; margin-right: 15px;">Hi {{ username }}!</p>
+                            <a href="/logout" class="btn btn-primary">Logout</a>
+                        {% else %}
+                            <div class="form-group">
+                                <a href="/login" class="btn btn-primary ">Login</a>
+                            </div>
+                            <div class="form-group">
+                                <a href="/signup" class="btn btn-primary ">Signup</a>
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="collapse navbar-collapse" style="text-align: right;">
+
+                        {% if username %}
+                            {% set navigation_links = [
+                                    ('/', 'home', 'Home'),
+                                    ('/blog', 'blog', 'Blogs'),
+                                    ('/blog/newpost', 'newpost', 'New Post'),
+                                    ] %}
+                            {% set active_page = active_page|default('home') %}
+                        {% else %}
+                            {% set navigation_links = [
+                                    ('/', 'home', 'Home'),
+                                    ('/blog', 'blog', 'Blogs'),
+                                    ] %}
+                            {% set active_page = active_page|default('home') %}
+                        {% endif %}
+
+
+                        <ul class="nav navbar-nav text-right" style="text-align: right;">
+
+                            <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                            <li class="hidden">
+                                <a class="page-scroll" href="#page-top"></a>
+                            </li>
+
+                            {% for href, id, caption in navigation_links %}
+                                <li{% if id == active_page %} class="page-scroll"{% endif %}>
+                                    <a href="{{ href|e }}">{{ caption|e }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                    </div>
+                    <!-- /.navbar-collapse -->
+
+                </div>
+            </div>
+
+        </div>
+
+        </div>
+        <!-- /.container -->
+    </nav>
+
+{% endblock %}

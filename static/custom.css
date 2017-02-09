@@ -1,0 +1,585 @@
+/**
+*   This is my custom styles for this project/assignments
+*/
+@import url('https://fonts.googleapis.com/css?family=Bilbo+Swash+Caps|Calligraffitti|Homemade+Apple|Nothing+You+Could+Do|Tangerine');
+
+
+
+
+
+body {
+    padding-top: 120px;
+    padding-bottom: 100px;
+    margin-bottom:100px;
+    margin-top:120px;
+
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 100px;
+    margin-bottom:100px;
+}
+
+@media (min-width: 767px) {
+    .navbar {
+        padding: 0 0;
+        -webkit-transition: background 0.5s ease-in-out, padding 0.5s ease-in-out;
+        -moz-transition: background 0.5s ease-in-out, padding 0.5s ease-in-out;
+        transition: background 0.5s ease-in-out, padding 0.5s ease-in-out;
+    }
+
+    .top-nav-collapse {
+        padding: 0;
+    }
+}
+
+
+
+
+.handwritten {
+    color: #ffffff;
+    font-family: 'Bilbo Swash Caps', cursive;
+    font-size: 30px;
+    font-weight: 100;
+    width: 200px;
+    height: 50px;
+    overflow: hidden;
+    /*white-space:nowrap;*/
+    text-overflow: ellipsis;
+}
+
+
+body {
+    padding: 0 0 0 0;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    background-image: url("../images/bg5.jpg");
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: #ffffff;
+}
+
+#header_section {
+    /*margin-top: 55px;*/
+}
+
+hr {
+    color: #204d74;
+    border-color: #204d74;
+    /*border-style: dashed;*/
+}
+
+label {
+    display: block;
+    /*font-size: 28px;*/
+}
+
+label + label {
+    margin-top: 20px;
+}
+
+label.label {
+    font-size: 20px;
+}
+
+input[type=text] {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    border-radius: 5px;
+    width: 100%;
+}
+
+input[type=password] {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    border-radius: 5px;
+    width: 100%;
+}
+
+input[type=submit] {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+button {
+    /*margin-top: 10px;*/
+    /*margin-bottom: 10px;*/
+    font-size: 18px;
+}
+
+/*
+    Special classes
+*/
+.z0 {
+    z-index: 0;
+}
+
+.z5 {
+    z-index: 5;
+    position: relative;
+}
+
+.z9 {
+    z-index: 9999999999;
+}
+
+/**
+* Transparent colors
+*/
+.trans_white_bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    opacity: 0.7;
+}
+
+.trans_black_bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    opacity: 0.4;
+}
+
+/**
+* Borders and Lines
+*/
+.bordered {
+    border: 1px solid #265a88;
+}
+
+.bordered_1_white {
+    border: 2px solid #ffffff;
+}
+
+.line_divider_white {
+    border: 1px solid #ffffff;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 97%;
+}
+
+/**
+* Margins and Paddings
+*/
+.padding_5 {
+    padding: 5px 5px 5px 5px;
+}
+
+.padding_10 {
+    padding: 10px 10px 10px 10px;
+}
+
+.padding_15 {
+    padding: 15px 15px 15px 15px;
+}
+
+.padding_20 {
+    padding: 20px 20px 20px 20px;
+}
+
+.padding_25 {
+    padding: 25px 25px 25px 25px;
+}
+
+.margin_5 {
+    margin: 5px 5px 5px 5px;
+}
+
+.margin_10 {
+    margin: 10px 10px 10px 10px;
+}
+
+.margin_15 {
+    margin: 15px 15px 15px 15px;
+}
+
+.margin_20 {
+    margin: 20px 20px 20px 20px;
+}
+
+.margin_25 {
+    margin: 25px 25px 25px 25px;
+}
+
+#content_section {
+    margin-bottom: 140px;
+}
+
+/*
+    Font styles
+*/
+.post-heading {
+    position: relative;
+    border-bottom: 3px solid #666;
+}
+
+.post-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.post-date {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    color: #999;
+
+}
+
+.post-content {
+    margin-top: 5px;
+}
+
+.fontCam {
+    text-transform: capitalize;
+}
+
+/*
+    Form styles
+*/
+.login_form_container {
+    display: none;
+    border-radius: 8px;
+    text-align: center;
+    position: absolute;
+    right: 10px;
+    top: 60px;
+    max-width: 420px;
+    padding: 10px 10px 10px 10px;
+    overflow: hidden;
+}
+
+.signup_form_container {
+    display: none;
+    border-radius: 8px;
+    text-align: center;
+    position: absolute;
+    right: 10px;
+    top: 60px;
+    max-width: 420px;
+    padding: 10px 10px 10px 10px;
+    overflow: hidden;
+}
+
+.inline_display {
+    display: inline-block;
+
+}
+
+.comment_form_container {
+    display: none;
+    height: 0;
+}
+
+.div_cont {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.feature_bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+#logoFeature {
+    overflow: hidden;
+}
+
+#main_navigation li {
+    display: inline-block;
+}
+
+#main_navigation li:not(:last-child):after {
+    position: relative;
+    content: "|";
+    margin-right: 10px;
+    margin-left: 14px;
+    font-size: 22px;
+    top: 3.5px;
+}
+
+#footer_section {
+    position: fixed;
+    padding-top: 10px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    color: #ffffff;
+    background-color: #323232;
+
+}
+
+#footer_section_menu {
+    display: inline-flex;
+    list-style: none;
+}
+
+#footer_section_menu a {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.error {
+    color: red;
+}
+
+.main-title {
+    display: block;
+    color: #222;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    text-decoration: none;
+}
+
+.post + .post {
+    margin-top: 15px;
+}
+
+/* adjust body when menu is open */
+body.slide-active {
+    overflow-x: hidden
+}
+
+/*first child of #page-content so it doesn't shift around*/
+.no-margin-top {
+    margin-top: 0px !important
+}
+
+/*wrap the entire page content but not nav inside this div if not a fixed top, don't add any top padding */
+#page-content {
+    position: relative;
+    padding-top: 70px;
+    left: 0;
+}
+
+#page-content.slide-active {
+    padding-top: 0
+}
+
+/* put toggle bars on the left :: not using button */
+#slide-nav .navbar-toggle {
+    cursor: pointer;
+    position: relative;
+    line-height: 0;
+    float: left;
+    margin: 0;
+    width: 30px;
+    height: 40px;
+    padding: 10px 0 0 0;
+    border: 0;
+    background: transparent;
+}
+
+/* icon bar prettyup - optional */
+#slide-nav .navbar-toggle > .icon-bar {
+    width: 100%;
+    display: block;
+    height: 3px;
+    margin: 5px 0 0 0;
+}
+
+#slide-nav .navbar-toggle.slide-active .icon-bar {
+    background: orange
+}
+
+.navbar-header {
+    position: relative
+}
+
+/* un fix the navbar when active so that all the menu items are accessible */
+.navbar.navbar-fixed-top.slide-active {
+    position: relative
+}
+
+.navbar {
+    border-bottom: 2px solid #ffffff;
+    box-shadow: #0f0f0f -4px 2px 20px 6px;
+}
+
+/* screw writing importants and shit, just stick it in max width since these classes are not shared between sizes */
+@media (max-width: 767px) {
+    #slide-nav .container {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100%;
+    }
+
+    #slide-nav .navbar-header {
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    #slide-nav .navbar.slide-active {
+        position: absolute;
+        width: 80%;
+        top: -1px;
+        z-index: 1000;
+    }
+
+    #slide-nav #slidemenu {
+        background: #f7f7f7;
+        left: -100%;
+        width: 80%;
+        min-width: 0;
+        position: absolute;
+        padding-left: 0;
+        z-index: 2;
+        top: -8px;
+        margin: 0;
+    }
+
+    #slide-nav #slidemenu .navbar-nav {
+        min-width: 0;
+        width: 100%;
+        margin: 0;
+    }
+
+    #slide-nav #slidemenu .navbar-nav .dropdown-menu li a {
+        min-width: 0;
+        width: 80%;
+        white-space: normal;
+    }
+
+    #slide-nav {
+        border-top: 0
+    }
+
+    #slide-nav.navbar-inverse #slidemenu {
+        background: #333
+    }
+
+    /* this is behind the navigation but the navigation is not inside it so that the navigation is accessible and scrolls*/
+    #navbar-height-col {
+        position: fixed;
+        top: 0;
+        height: 100%;
+        bottom: 0;
+        width: 80%;
+        left: -80%;
+        background: #f7f7f7;
+    }
+
+    #navbar-height-col.inverse {
+        background: #333;
+        z-index: 1;
+        border: 0;
+    }
+
+    #slide-nav .navbar-form {
+        width: 100%;
+        margin: 8px 0;
+        text-align: center;
+        overflow: hidden;
+        /*fast clearfixer*/
+    }
+
+    #slide-nav .navbar-form .form-control {
+        text-align: center
+    }
+
+    #slide-nav .navbar-form .btn {
+        width: 100%
+    }
+
+    button {
+        font-size: 18px;
+    }
+
+}
+
+@media (min-width: 768px) {
+    #page-content {
+        left: 0 !important
+    }
+
+    .navbar.navbar-fixed-top.slide-active {
+        position: fixed
+    }
+
+    .navbar-header {
+        left: 0 !important
+    }
+
+    button {
+        /*margin-top: 10px;*/
+        /*margin-bottom: 10px;*/
+        font-size: 18px;
+    }
+
+}
+
+
+
+
+
+
+
+
+/* Test styles */
+.read-more-state {
+    display: none;
+}
+
+.read-more-target {
+    opacity: 0;
+    max-height: 0;
+    font-size: 0;
+    transition: .25s ease;
+}
+
+.read-more-state:checked ~ .read-more-wrap .read-more-target {
+    opacity: 1;
+    font-size: inherit;
+    max-height: 999em;
+}
+
+.read-more-state ~ .read-more-trigger:before {
+    content: 'Show more';
+}
+
+.read-more-state:checked ~ .read-more-trigger:before {
+    content: 'Show less';
+}
+
+.read-more-trigger {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0 .5em;
+    color: #666;
+    font-size: .9em;
+    line-height: 2;
+    border: 1px solid #ddd;
+    border-radius: .25em;
+}
+
+
+
+
+
+
