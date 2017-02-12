@@ -67,7 +67,7 @@ class User(db.Model):
 
     @classmethod
     def update_user(cls, user_id, user_name, user_password):
-        u = User.user_by_id(int(user_id))
+        u = User.user_by_id(int(user_id)).get()
         u.user_name = user_name
         u.password = user_password
         u.put()
@@ -75,7 +75,7 @@ class User(db.Model):
 
     @classmethod
     def remove_user(cls, user_id):
-        u = User.user_by_id(int(user_id))
+        u = User.user_by_id(int(user_id)).get()
         if u.key().id() == user_id:
             u.delete()
             return True
@@ -86,31 +86,54 @@ class User(db.Model):
 
     @classmethod
     def user_by_name(cls, user_name):
-        return User.all().filter('name =', user_name).get()
+        return db.GqlQuery("select * from User where name=:name", name=user_name)
+        # return User.all().filter('name=', user_name)
 
     @classmethod
-    def user_by_id(cls, id):
-        return User.all().filter('ids = ', int(id)).get()
+    def user_by_id(cls, user_id):
+        return db.GqlQuery("select * from User where ids=:userid", userid=int(user_id))
 
     @classmethod
-    def user_id_by_username(cls, user_name):
-        u = User.all().filter('name = ', user_name).get()
-        user_id = int(u.key().id())
-        return user_id
+    def user_id_by_name(cls, user_name):
+        u = User.all().filter("name", user_name).get().key().id()
+        # u = User.user_by_name(user_name).get().id
+        return u
 
     @classmethod
-    def user_name_by_userid(cls, user_id):
-        return User.all().filter('ids = ', int(user_id)).get()
-
+    def user_name_by_id(cls, user_id):
+        # u = User.user_by_id(user_id).get().name
+        u = User.all().filter('ids', user_id).get().name
+        # user_name = u.key().name()
+        return u
 
     @classmethod
     def user_comments(cls, user_id):
-        c = Comments.all().filter('user=', int(user_id)).get()
+        c = Comments.all().filter('user', int(user_id)).fetch(100)
+        return c
+
+    @classmethod
+    def comments_by_user_id(cls, user_id):
+        c = Comments.all().filter('user', int(user_id)).fetch(100)
+        return c
+
+    @classmethod
+    def comments_by_user_name(cls, user_name):
+        c = Comments.all().filter('user', user_name).fetch(100)
         return c
 
     @classmethod
     def user_likes(cls, user_id):
-        l = Likes.all().filter('user=', int(user_id)).get()
+        l = Likes.all().filter('user', int(user_id)).get()
+        return l
+
+    @classmethod
+    def likes_by_user_id(cls, user_id):
+        l = Likes.all().filter('user', int(user_id)).get()
+        return l
+
+    @classmethod
+    def likes_by_user_name(cls, user_id):
+        l = Likes.all().filter('user', int(user_id)).get()
         return l
 
 
@@ -120,14 +143,19 @@ class Post(db.Model):
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     created_by = db.StringProperty(required=True)
+    post_user_id = db.IntegerProperty(required=True)
     last_modified = db.DateTimeProperty(auto_now=True)
 
     # add a podt
     @classmethod
-    def add_post(cls, subject, content, created, created_by, last_modified):
-        b = Post(subject=subject, content=content, created=created, created_by=created_by, last_modified=last_modified)
+    def add_post(cls, subject, content, created_by, post_user_id, last_modified):
+        b = Post(subject=subject, content=content, created_by=created_by, last_modified=last_modified, post_user_id=int(post_user_id))
         b.put()
-        return b
+        return True
+
+    @classmethod
+    def post_by_id(cls, post_id):
+        return Post.all().filter('ids', int(post_id)).get()
 
     @classmethod
     def get_all_posts(cls):
@@ -138,21 +166,29 @@ class Post(db.Model):
         return Post.all().fetch(10)
 
     @classmethod
-    def get_ten_posts_collection(cls):
-        posts = Post.all().fetch(10)
-        for post in posts:
-            # find this post id
-            post_id = post.key().id()
-            # Find all the comments related to this blog
-            comments = db.GqlQuery("select * from Comments where entry=:post_id", post_id=post_id)
-            for comment in comments:
-                # user_id = comment.user
-                subject = comment.content
-                date = comment.created.strftime("%b %d, %Y")
+    def get_post_collection(cls, post_id):
+        # p = db.GqlQuery("select * from Post where ids=:post_id", post_id=int(post_id))
+        p = Post.post_by_id(int(post_id))
+        comments = Comments.comments_by_post_id(int(post_id))
+        likes = Likes.count_entry_likes(int(post_id))
+        # comments = Comments.all().filter('entry=', int(post_id)).fetch(1000)
+        # likes = Likes.all().filter('entry=', int(post_id)).count()
+        post_collection = [post_id, {"post": p, "comments": comments, "likes": likes}]
+        return post_collection
 
+    # @classmethod
+    # def update_post(cls, post_id, subject_update, content_update):
+    #     p = Post.all().filter("ids", int(post_id)).get()
+    #     p.subject = subject_update
+    #     p.content = content_update
+    #     p.put()
+    #     return True
 
-
-
+    @classmethod
+    def delete_post(cls, entry_id):
+        p = Post.all().filter("ids", entry_id).get()
+        p.delete()
+        return True
 
 
 ## Post Like Model Class
@@ -160,6 +196,10 @@ class Likes(db.Model):
     user = db.IntegerProperty(required=False)
     entry = db.IntegerProperty(required=False)
     created = db.DateTimeProperty(auto_now_add=True)
+
+    @classmethod
+    def count_entry_likes(cls, post_id):
+        return Likes.all().filter('entry=', int(post_id)).count()
 
     @classmethod
     def get_by_user(cls, user_id):
@@ -175,7 +215,7 @@ class Likes(db.Model):
 
     @classmethod
     def add(cls, user, entry):
-        f = Likes(user=user, entry=entry)
+        f = Likes(user=user, entry=int(entry))
         f.put()
         return f
 
@@ -187,7 +227,7 @@ class Likes(db.Model):
 
     @classmethod
     def remove(cls, user, entry):
-        f = cls.get_by_entry(user_id=user, entry_id=entry)
+        f = cls.get_by_entry(user_id=user, entry_id=int(entry))
 
         # make sure that logged in user is unliking their liked entry
         if f and f.user == user:
@@ -197,103 +237,32 @@ class Likes(db.Model):
 
 ## User Blog Comments DB Model
 class Comments(db.Model):
-    user = db.IntegerProperty(required=False)
+
+    user_id = db.IntegerProperty(required=False)
+    user = db.StringProperty(required=False)
     entry = db.IntegerProperty(required=True)
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
 
     # add comments
     @classmethod
-    def add(cls, user, entry, content):
-        c = Comments(user=user, entry=entry, content=content)
+    def add(cls, user, user_id, entry, content):
+        c = Comments(user=user, user_id=user_id, entry=entry, content=content)
         c.put()
         return c
 
     # update comment
     @classmethod
     def update_comment(cls, post_id, new_comment):
-        c = Comments.get_by_postid(int(post_id))
+        c = Comments.comments_by_post_id(int(post_id))
         c.content = new_comment
         c.put()
         return c
 
-    # remove comment
     @classmethod
-    def remove_user(cls, user_id):
-        u = User.user_by_id(int(user_id))
-        if u.key().id() == user_id:
-            u.delete()
-            return True
-
-    # display all comments
-    @classmethod
-    def get_all_comments(cls):
-        return Comments.all()
-
-    # display latest 10 comments
-    @classmethod
-    def get_latest_10_comments(cls):
-        return Comments.all().fetch(10)
-
-    # display latest ten comments
-    @classmethod
-    def get_comment_by_id(cls, comment_id):
-        return Comments.all().filter('ids =', int(comment_id)).get()
-
-    # display comments by posts
-    @classmethod
-    def get_all_comments_by_post(cls, post_id):
-        return Comments.all().filter("entry=", post_id)
+    def comments_by_id(cls, comment_id):
+        return Comments.all().filter('entry', int(comment_id)).get()
 
     @classmethod
-    def get_comment_user_name(cls, comment_id):
-        comment = Comments.all().filter("ids=", int(comment_id)).get()
-        user_id = comment.user
-        user_name = User.all().filter("ids=", user_id).get()
-        return User.user_name_by_userid(user_name)
-
-
-
-
-
-
-    @classmethod
-    def get_by_postid(cls, post_id):
-        return Comments.all().filter('entry =', int(post_id)).get()
-
-    @classmethod
-    def get_by_user(cls, user):
-        return Comments.all().filter('user =', int(user)).order('-entry')
-
-    @classmethod
-    def get_by_entry(cls, entry):
-        return Comments.all().filter('entry =', int(entry)).order('created').get()
-
-    @classmethod
-    def add(cls, user, entry, content):
-        c = Comments(user=user, entry=entry, content=content)
-        c.put()
-        return c
-
-    @classmethod
-    def add_anon(cls, entry, content):
-        c = Comments(entry=entry, content=content)
-        c.put()
-        return c
-
-    @classmethod
-    def update(cls, comment_id, user, content):
-        c = Comments.get_by_id(comment_id)
-        # ensure that user who created comment is same as who is editing
-        if user == c.user.key().id():
-            c.content = content
-            c.put()
-            return c
-
-    @classmethod
-    def remove(cls, comment_id, user):
-        c = Comments.get_by_id(comment_id)
-        # make sure that logged in user is same as comment owner
-        if c and c.user.key().id() == user:
-            c.delete()
-            return True
+    def comments_by_post_id(cls, post_id):
+        return Comments.all().filter('entry', int(post_id)).fetch(1000)

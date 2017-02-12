@@ -1,18 +1,24 @@
 //jQuery to collapse the navbar on scroll
 $(window).scroll(function() {
-    if ($(".navbar").offset().top > 11) {
+
+    if ($(window).scrollTop() > 50)
+    {
         $(".navbar-fixed-top").addClass("top-nav-collapse");
         $(".blog_logo").animate({
-            height: "40px",
-            top: "-10px"
+            // left: "150px",
+            opacity: "0.2"
         });
-    } else {
+    } else if ($(window).scrollTop() <= 40) {
         $(".navbar-fixed-top").removeClass("top-nav-collapse");
         $(".blog_logo").animate({
-            height: "80px",
-            top: "-30px"
+            // left: "0px",
+            opacity: "1.0"
         });
+
     }
+
+
+
 });
 
 //jQuery for page scrolling feature - requires jQuery Easing plugin

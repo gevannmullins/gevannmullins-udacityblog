@@ -13,14 +13,13 @@
 {% block content %}
     <div class="col-lg-3 col-md-3"></div>
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
-        <h2>new post</h2>
+        <h2>edit post</h2>
 
         <form method="post">
-            <input type="hidden" name="form_name" value="newpost" />
-            <input type="hidden" name="user_name" value="{{ username }}" />
-            <input type="hidden" name="user_id" value="{{ userid }}" />
-            <input type="text" name="subject" value="{{ subject }}" class="form-control" placeholder="subject">
-            <textarea name="content" class="form-control" placeholder="Blog Content">{{ content }}</textarea>
+            <input type="hidden" name="form_name" value="update_post" />
+            <input type="hidden" name="post_id" value="{{ post_id }}" />
+            <input type="text" name="subject_update" value="{{ subject }}" class="form-control" placeholder="subject">
+            <textarea name="content_update" class="form-control" placeholder="Blog Content">{{ content }}</textarea>
 
             <div class="error">{{ error }}</div>
 
