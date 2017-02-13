@@ -106,12 +106,13 @@
                     <div class="row">
                         <div class="col-xs-6">
 
-                            <!-- Like Form -->
+                            <!-- Like Form --><!--
                             <form method="post" class="inline_display">
                                 <input type="hidden" name="form_name" value="likes_form">
-                                <input type="hidden" name="entry_id" value="{{ blog.blog.key().id() }}">
-                                <input type="submit" class="btn btn-primary" value="Like +{{ blog.likes }}">
-                            </form>
+                                <input type="hidden" name="entry_id" value="{#  { blog.blog.key().id() }#}">
+                                <input type="submit" class="btn btn-primary" value="Like +{# { blog.likes }#}">
+                            </form>-->
+                            <a href="/like/{{ blog.blog.key().id() }}" class="btn btn-primary">Like +{{ blog.likes }}</a>
                             <span class="inline_display">
                                 <button id="{{ blog.blog.key().id() }}" class="btn btn-primary comment_btn">Comment</button>
                             </span>
@@ -121,13 +122,14 @@
                             {% if username %}
                                 {% if blog.blog.created_by == username  %}
                                     <span class="inline_display">
-                                        <form method="post">
+<!--                                        <form method="post">
                                             <input type="hidden" name="form_name" value="edit_post" />
-                                            <input type="hidden" name="post_id" value="{{ blog.blog.key().id() }}" />
-                                            <input type="hidden" name="subject" value="{{ blog.blog.subject }}" />
-                                            <input type="hidden" name="content" value="{{ blog.blog.content }}" />
+                                            <input type="hidden" name="post_id" value="{# { blog.blog.key().id() }#}" />
+                                            <input type="hidden" name="subject" value="{# { blog.blog.subject }#}" />
+                                            <input type="hidden" name="content" value="{# { blog.blog.content }#}" />
                                             <input type="submit" class="btn btn-primary" value="Edit" />
-                                        </form>
+                                        </form>-->
+                                        <a href="/edit/{{ blog.blog.key().id() }}" class="btn btn-primary">Edit</a>
                                     </span>
                                     <span class="inline_display">
                                         <form method="post">

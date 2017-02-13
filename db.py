@@ -176,14 +176,6 @@ class Post(db.Model):
         post_collection = [post_id, {"post": p, "comments": comments, "likes": likes}]
         return post_collection
 
-    # @classmethod
-    # def update_post(cls, post_id, subject_update, content_update):
-    #     p = Post.all().filter("ids", int(post_id)).get()
-    #     p.subject = subject_update
-    #     p.content = content_update
-    #     p.put()
-    #     return True
-
     @classmethod
     def delete_post(cls, entry_id):
         p = Post.all().filter("ids", entry_id).get()
