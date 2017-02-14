@@ -61,8 +61,8 @@ class BlogFront(BlogHandler):
     def post(self):
         form_name = self.request.get('form_name')
         post_id = self.request.get('entry_id')
+        username = self.request.cookies.get('username')
         if form_name == 'comments_form':
-            username = self.request.cookies.get('username')
             post_content = self.request.get('comment')
             if username:
                 user_id = User.user_id_by_name(username)
@@ -76,25 +76,15 @@ class BlogFront(BlogHandler):
         if form_name == 'delete_post':
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             entry = db.get(key)
+            user_entry = entry.created_by
             if not entry:
                 return self.redirect("/blog")
             else:
-                entry.delete()
-                self.redirect("/blog")
-
-        if form_name == 'update_post':
-            subject_update = self.request.get('subject_update')
-            content_update = self.request.get('content_update')
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            p = db.get(key)
-            if not p:
-                return self.redirect("/blog")
-            else:
-                p.subject = subject_update
-                p.content = content_update
-                p.put()
-                self.redirect('/blog/%s' % post_id)
-
+                if user_entry == username:
+                    entry.delete()
+                    self.redirect("/blog")
+                else:
+                    self.redirect("/signup")
 
 class PostPage(BlogHandler):
     def get(self, post_id):
@@ -123,27 +113,11 @@ class PostPage(BlogHandler):
                 Comments.add("guest", int(100), int(post_id), post_content)
                 self.redirect('/blog/%s' % post_id)
 
-        if form_name == 'edit_post':
-            subject_update = self.request.get('subject')
-            content_update = self.request.get('content')
-            self.render('edit_post.html', post_id=post_id, subject=subject_update, content=content_update)
-
         if form_name == 'delete_post':
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             entry = db.get(key)
             entry.delete()
             self.redirect("/blog")
-
-        if form_name == 'update_post':
-            subject_update = self.request.get('subject_update')
-            content_update = self.request.get('content_update')
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            p = db.get(key)
-            p.subject = subject_update
-            p.content = content_update
-            p.put()
-            self.redirect('/blog/%s' % post_id)
-
 
 
 class NewPost(BlogHandler):
@@ -182,7 +156,6 @@ class EditPost(BlogHandler):
         subject = p.subject
         content = p.content
         self.render('edit_post.html', username=username, post_id=post_id, subject=subject, content=content)
-
 
     def post(self, post_id):
         subject = self.request.get('subject_update')
