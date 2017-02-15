@@ -25,191 +25,150 @@ class MainPage(BlogHandler):
             self.render('main.html', posts=posts)
 
 ##### blog stuff
-
 def blog_key(name='default'):
     return db.Key.from_path('blogs', name)
 
+def likes(post_id):
+    return Likes.all().filter("entry", int(post_id)).count()
+
+class LikeHandler(BlogHandler):
+    def get(self, post_id):
+        username = self.request.cookies.get('username')
+        if username:
+            user_id = User.all().filter("name", username).get().key().id()
+            Likes.add(user_id, post_id)
+            self.redirect("/blog/%s" % post_id)
+        else:
+            Likes.add(int(100), int(post_id))
+            self.redirect("/blog/%s" % post_id)
 
 class BlogFront(BlogHandler):
     def get(self):
         user_name = self.request.cookies.get('username')
-
-        # Create all the variables/objects/arrays
-        blog_collect_dict = dict()
         blog_collect_array = []
-        comment_users_array = []
-
-        # List all the blogs
         posts = db.GqlQuery("select * from Post")
-        # Loop through each Blog
         for post in posts:
-            # find this post id
             post_id = post.key().id()
-            # Find all the comments related to this blog
-            post_comments = Comments.get_all_comments_by_post(post_id)
-            # for post_comment in post_comments:
+            post_comments = Comments.comments_by_post_id(int(post_id))
+            blog_collect_array.insert(post_id, {"blog": post, "comments": post_comments, "likes": int(likes(post_id))})
 
-
-            # self.write("<br />")
-            # self.write("<br />")
-            # self.write(list(post_comments))
-            # self.write("<br />")
-            # self.write("<br />")
-            # self.write("<br />")
-            # self.write("<br />")
-            # self.write("<br />")
-            # self.write("<br />")
-
-            # find all the likes related to this blog
-            blog_likes = db.GqlQuery("select * from Likes where entry=:post_id", post_id=post_id).count()
-            # build the data collection
-            blog_collect_dict.update({"blog": post, "comments": post_comments, "likes": int(blog_likes)})
-            # save new data collection to an array
-            blog_collect_array.insert(post_id, {"blog": post, "comments": post_comments, "likes": blog_likes})
-
-        # if user_name exists then pass it along else only render the post
         if user_name:
-            self.render('blog_entries.html', posts=posts, blog_collection=blog_collect_array, username=user_name, name=user_name)
+            user_id = User.all().filter("name", user_name).get().key().id()
+            self.render('blog_entries.html', posts=posts, blog_collection=blog_collect_array, userid=user_id, username=user_name, name=user_name)
         else:
             self.render('blog_entries.html', posts=posts, blog_collection=blog_collect_array)
 
-    def post(self, post_id):
-        # first find the name of the form
+    def post(self):
         form_name = self.request.get('form_name')
-
+        post_id = self.request.get('entry_id')
+        username = self.request.cookies.get('username')
         if form_name == 'comments_form':
-            blog_comments = Comments.all().filter('entry =', int(post_id)).get()
-            # comments_blog = Post.all().filter('entry =', int(post_id)).get()
-            # blog_comments = db.GqlQuery("select * from Comments where entry=:post_id order by created desc limit 10", post_id=post_id)
-
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            post = db.get(key)
-            username = self.request.cookies.get('username')
-            user = User.user_by_name(username)
-            user_id = user.key().id()
-            likes = int(Likes.count_likes(post_id))
-
             post_content = self.request.get('comment')
-            # post_comments = Comments.get_by_postid(int(post_id))
-
             if username:
-                Comments.add(int(user_id), int(post_id), post_content)
+                user_id = User.user_id_by_name(username)
+                Comments.add(str(username), int(user_id), int(post_id), post_content)
                 self.redirect('/blog')
-                # self.render("permalink.html", post=post, username=username, name=username, comments=post_comments, likes=likes)
             else:
-                Comments.add(int(100), int(post_id), post_content)
+                Comments.add("guest", int(100), int(post_id), post_content)
                 self.redirect('/blog')
-                # self.render('permalink.html', post=post, comments=post_comments, likes=likes)
 
-        if form_name == 'likes_form':
+
+        if form_name == 'delete_post':
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            post = db.get(key)
-            username = self.request.cookies.get('username')
-            user = User.user_by_name(username)
-            user_id = user.key().id()
-            likes = int(Likes.count_likes(post_id))
-
-            post_comments = Comments.get_all_comments()
-            if username:
-                Likes.add(int(user_id), int(post_id))
-                self.redirect("/blog")
-                # self.render("blog_entries.html", post=post, username=username, name=username, comments=post_comments, likes=likes)
+            entry = db.get(key)
+            user_entry = entry.created_by
+            if not entry:
+                return self.redirect("/blog")
             else:
-                Likes.add(int(100), int(post_id))
-                self.redirect("/blog")
-                # self.render('blog_entries.html', post=post, comments=post_comments, likes=likes)
-
+                if user_entry == username:
+                    entry.delete()
+                    self.redirect("/blog")
+                else:
+                    self.redirect("/signup")
 
 class PostPage(BlogHandler):
     def get(self, post_id):
-        # Create all the variables/objects/arrays
-        blog_collect_dict = dict()
         blog_collect_array = []
-        # get the user_name
         user_name = self.request.cookies.get('username')
-        # get the blog entry
-        # post = Post.get_blog_by_id(post_id)
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
-        # Find all the comments related to this blog
-        comments = db.GqlQuery("select * from Comments where entry=:post_id", post_id=int(post_id)).fetch(1000)
-        # find all the likes related to this blog
-        blog_likes = db.GqlQuery("select * from Likes where entry=:post_id", post_id=int(post_id)).count()
-        # build the data collection
-        # blog_collect_dict.update({"blog": post, "comments": comments, "likes": int(blog_likes)})
-        # save new data collection to an array
-        blog_collect_array.insert(int(post_id), {"blog": post, "comments": comments, "likes": blog_likes})
-        # if user_name exist then pass it along else
-
-        # self.write(list(comments))
-
+        comments = Comments.comments_by_post_id(int(post_id))
+        blog_collect_array.insert(int(post_id), {"blog": post, "comments": comments, "likes": int(likes(post_id))})
         if user_name:
-            self.render('blog_entry.html', post=post, blog_collection=blog_collect_array, comments=comments, blog_likes=blog_likes, username=user_name, name=user_name)
+            self.render('blog_entry.html', post=post, blog_collection=blog_collect_array, username=user_name, name=user_name)
         else:
-            self.render('blog_entry.html', post=post, blog_collection=blog_collect_array, comments=comments, blog_likes=blog_likes)
+            self.render('blog_entry.html', post=post, blog_collection=blog_collect_array)
 
     def post(self, post_id):
-        # first find the name of the form
         form_name = self.request.get('form_name')
-
         if form_name == 'comments_form':
-            blog_comments = Comments.all().filter('entry =', int(post_id)).get()
-            # comments_blog = Post.all().filter('entry =', int(post_id)).get()
-            # blog_comments = db.GqlQuery("select * from Comments where entry=:post_id order by created desc limit 10", post_id=post_id)
-
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            post = db.get(key)
             username = self.request.cookies.get('username')
-            user = User.user_by_name(username)
-            user_id = user.key().id()
-            likes = int(Likes.count_likes(post_id))
-
             post_content = self.request.get('comment')
-            # post_comments = Comments.get_by_postid(int(post_id))
-
+            post_id = self.request.get('entry_id')
             if username:
-                Comments.add(int(user_id), int(post_id), post_content)
-                self.redirect("/blog/" + int(post_id))
-                # self.render("blog_entry.html", post=post, username=username, name=username)
+                user_id = User.all().filter("name", username).get().key().id()
+                Comments.add(str(username), int(user_id), int(post_id), post_content)
+                self.redirect('/blog/%s' % post_id)
             else:
-                Comments.add(int(100), int(post_id), post_content)
-                self.redirect("/blog/" + int(post_id))
-                # self.render('blog_entry.html', post=post)
+                Comments.add("guest", int(100), int(post_id), post_content)
+                self.redirect('/blog/%s' % post_id)
 
-        if form_name == 'likes_form':
+        if form_name == 'delete_post':
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            post = db.get(key)
-            username = self.request.cookies.get('username')
-            user = User.user_by_name(username)
-            user_id = user.key().id()
-            likes = int(Likes.count_likes(post_id))
-
-            post_comments = Comments.get_all_comments()
-            if username:
-                Likes.add(int(user_id), int(post_id))
-                self.render("/blog/" + post_id)
-                # self.render("permalink.html", post=post, username=username, name=username, comments=post_comments, likes=likes)
-            else:
-                Likes.add(int(100), int(post_id))
-                self.render("/blog/" + post_id)
-                # self.render('permalink.html', post=post, comments=post_comments, likes=likes)
+            entry = db.get(key)
+            entry.delete()
+            self.redirect("/blog")
 
 
 class NewPost(BlogHandler):
     def get(self):
         username = self.request.cookies.get('username')
-        self.render("newpost.html", username=username)
+        if username:
+            user_id = User.user_id_by_name(username)
+            self.render("newpost.html", username=username, userid=user_id)
+        else:
+            self.redirect('/signup')
 
     def post(self):
+        username = self.request.cookies.get('username')
+        if username:
+            subject = self.request.get('subject')
+            content = self.request.get('content')
+            user_name = self.request.get('user_name')
+            user_id = self.request.get('user_id')
+            if subject and content:
+                p = Post(parent=blog_key(), subject=subject, content=content, created_by=user_name, post_user_id=int(user_id))
+                p.put()
+                self.redirect('/blog/%s' % str(p.key().id()))
+            else:
+                error = "subject and content, please!"
+                self.write("newpost.html", subject=subject, content=content, error=error)
+        else:
+            self.redirect('/signup')
 
-        subject = self.request.get('subject')
-        content = self.request.get('content')
+
+
+class EditPost(BlogHandler):
+    def get(self, post_id):
+        username = self.request.cookies.get('username')
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        p = db.get(key)
+        subject = p.subject
+        content = p.content
+        self.render('edit_post.html', username=username, post_id=post_id, subject=subject, content=content)
+
+    def post(self, post_id):
+        subject = self.request.get('subject_update')
+        content = self.request.get('content_update')
         user_cookie = self.request.cookies.get('username')
-        name_cookie = self.request.cookies.get('name')
+        post_user = db.GqlQuery("select * from User where name=:user_name", user_name=user_cookie).get()
+        post_user_id = post_user.key().id()
 
         if subject and content:
-            p = Post(parent=blog_key(), subject=subject, content=content, username=user_cookie, created_by=user_cookie)
-            # p = Post(parent=blog_key(), subject=subject, content=content, username=user_cookie, created_by=user_cookie)
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            p = db.get(key)
+            p.subject = subject
+            p.content = content
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
@@ -233,20 +192,21 @@ class Rot13(BlogHandler):
 
 class Login(BlogHandler):
     def write_error(self):
-        self.write('login-form.html', error_login="Username and/or Password do not match!")
+        self.render('login-form.html', error_login="Username and/or Password do not match!")
 
     def get(self):
         self.render('login-form.html')
 
     def post(self):
-        # validate credentials
         username = self.request.get('username')
         password = self.request.get('password')
+        secure_password = hashlib.sha256(password).hexdigest()
 
         if username and password:
-            u = User.user_by_name(username)
-
-            if u.password == hashlib.sha256(password).hexdigest():
+            dbpassword = User.user_by_name(username).get().password
+            if not dbpassword:
+                self.redirect('/signup')
+            if dbpassword == secure_password:
                 self.response.set_cookie('username', str(username))
                 self.response.set_cookie('name', str(username))
                 self.redirect('/welcome?username=' + username)
@@ -269,7 +229,6 @@ class Signup(BlogHandler):
         secure_password = hashlib.sha256(password).hexdigest()
 
         # check if username already exists
-
         params = dict(username=username, email=email)
 
         db_user = User.user_by_name(username)
@@ -328,8 +287,9 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/welcome', Welcome),
                                ('/blog/?', BlogFront),
                                ('/blog/([0-9]+)', PostPage),
-                               # ('/blog/([0-9]+)', SinglePostPage),
                                ('/blog/newpost', NewPost),
-                               # ('/blog/likes/?', LikesHandler),
+                               ('/blog/editpost', EditPost),
+                               ('/like/([0-9]+)', LikeHandler),
+                               ('/edit/([0-9]+)', EditPost),
                                ],
                               debug=True)

@@ -55,11 +55,9 @@
                             {% else %}
                                 {% for comments in blog.comments %}
                                     <br/>
-                                    {{ comments.created }}
+                                    Date: {{ comments.created.strftime("%b %d, %Y") }}
                                     <br/>
-                                    {{ comments.user }}
-                                    <br/>
-                                    {{ comments.entry }}
+                                    User: {{ comments.user }}
                                     <br/>
                                     {{ comments.content }}
                                     <br/>
@@ -80,7 +78,7 @@
                                     <input type="hidden" name="form_name" value="comments_form">
                                     <input type="hidden" name="entry_id" value="{{ blog.blog.key().id() }}">
                                     {% if username %}
-                                        <input type="hidden" name="form_name" value="{{ username }}">
+                                        <input type="hidden" name="user_name" value="{{ username }}">
                                     {% endif %}
                                     <div class="form-group">
                                         <label class="label">Enter your comment:</label>
@@ -98,13 +96,14 @@
 
                     <div class="row">
                         <div class="col-xs-6">
-
                             <!-- Like Form -->
-                            <form method="post" class="inline_display">
-                                <input type="hidden" name="form_name" value="likes_form">
-                                <input type="hidden" name="entry_id" value="{{ blog.blog.key().id() }}">
-                                <input type="submit" class="btn btn-primary" value="Like +{{ blog.likes }}">
-                            </form>
+                            <!--<form method="post" class="inline_display">
+                                <input type="hidden" name="form_name" value="likes_form" />
+                                <input type="hidden" name="entry_id" value="{{ blog.blog.key().id() }}" />
+                                <input type="submit" class="btn btn-primary" value="Like +{{ blog.likes }}" />
+                            </form>-->
+                            <a href="/like/{{ blog.blog.key().id() }}" class="btn btn-primary">Like +{{ blog.likes }}</a>
+                            <!-- Comment Button -->
                             <span class="inline_display">
                                 <button id="{{ blog.blog.key().id() }}" class="btn btn-primary comment_btn">Comment</button>
                             </span>
@@ -112,12 +111,29 @@
 
                         <div class="col-xs-6 text-right">
                             {% if username %}
-                                User Menu
+                                {% if blog.blog.created_by == username  %}
+                                    <span class="inline_display">
+                                    <!--
+                                        <form method="post">
+                                            <input type="hidden" name="form_name" value="edit_post" />
+                                            <input type="hidden" name="post_id" value="{# { blog.blog.key().id() }#}" />
+                                            <input type="submit" class="btn btn-primary" value="Edit" />
+                                        </form>
+                                        -->
+                                        <a href="/edit/{{ blog.blog.key().id() }}" class="btn btn-primary">Edit</a>
+                                    </span>
+                                    <span class="inline_display">
+                                        <form method="post">
+                                            <input type="hidden" name="form_name" value="delete_post" />
+                                            <input type="hidden" name="post_id" value="{{ blog.blog.key().id() }}" />
+                                            <input type="submit" class="btn btn-primary" value="Delete" />
+                                        </form>
+                                    </span>
+                                {% endif %}
                             {% endif %}
                         </div>
 
                     </div>
-
                 </div>
             </div>
 
