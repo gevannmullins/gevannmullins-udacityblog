@@ -1,5 +1,5 @@
 <application>
   <component name="VagrantSettings">
-    <option name="vagrantExecutable" value="/opt/vagrant/bin" />
+    <option name="vagrantExecutable" value="/opt/vagrant/bin/vagrant" />
   </component>
 </application>
