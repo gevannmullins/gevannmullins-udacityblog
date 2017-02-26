@@ -4,6 +4,7 @@
     <extensionMap>
       <mapping pattern="privacy_policy" type="HTML" />
       <mapping pattern="Vag_bu" type="PLAIN_TEXT" />
+      <mapping pattern="pg_config" type="PLAIN_TEXT" />
       <mapping pattern="Procfile" type="PLAIN_TEXT" />
     </extensionMap>
   </component>
