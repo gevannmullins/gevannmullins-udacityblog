@@ -10,6 +10,7 @@
       <mapping ext="php" type="PLAIN_TEXT" />
       <mapping ext="conf" type="PLAIN_TEXT" />
       <mapping ext="wsgi" type="PLAIN_TEXT" />
+      <mapping ext="rsa" type="PLAIN_TEXT" />
     </extensionMap>
   </component>
 </application>
