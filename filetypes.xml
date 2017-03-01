@@ -7,8 +7,10 @@
       <mapping pattern="pg_config" type="PLAIN_TEXT" />
       <mapping pattern="Vagrantfile" type="PLAIN_TEXT" />
       <mapping pattern="Procfile" type="PLAIN_TEXT" />
+      <mapping pattern="grader_bu" type="PLAIN_TEXT" />
       <mapping ext="php" type="PLAIN_TEXT" />
       <mapping ext="conf" type="PLAIN_TEXT" />
+      <mapping ext="pub" type="PLAIN_TEXT" />
       <mapping ext="wsgi" type="PLAIN_TEXT" />
       <mapping ext="rsa" type="PLAIN_TEXT" />
     </extensionMap>
