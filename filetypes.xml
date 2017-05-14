@@ -9,6 +9,7 @@
       <mapping pattern="Procfile" type="PLAIN_TEXT" />
       <mapping pattern="grader_bu" type="PLAIN_TEXT" />
       <mapping ext="php" type="PLAIN_TEXT" />
+      <mapping ext="example" type="PLAIN_TEXT" />
       <mapping ext="conf" type="PLAIN_TEXT" />
       <mapping ext="pub" type="PLAIN_TEXT" />
       <mapping ext="readme" type="PLAIN_TEXT" />
